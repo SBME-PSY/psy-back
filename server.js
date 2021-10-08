@@ -1,27 +1,16 @@
-const express = require('express');
-const cors = require('cors');
-const morgan = require('morgan');
 const dotenv = require('dotenv');
 // eslint-disable-next-line no-unused-vars
 const colors = require('colors');
-const connectDB = require('./config/db');
 
 dotenv.config({ path: './config/config.env' });
+const connectDB = require('./config/db');
 
 connectDB();
+const app = require('./app');
 
-const app = express();
+const PORT = process.env.PORT || 8000;
 
-app.use(express.json());
-app.use(cors());
-
-if (process.env.NODE_ENV === 'development') {
-  app.use(morgan('dev'));
-}
-
-const PORT = process.env.PORT || 3000;
-
-const server = app.listen(PORT, () =>
+const server = app.listen(PORT, '0.0.0.0', () =>
   console.log(`Listening on port ${PORT}`.yellow.bold)
 );
 
