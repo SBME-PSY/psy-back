@@ -17,7 +17,5 @@ app.use('/psy/user', userRouter);
 app.use('*', (req, res, next) => {
   next(new AppError('this route is not defind ', 400));
 });
-app.use((err, req, res, next) => {
-  console.log(err);
-});
+app.use(errorHandeler);
 module.exports = app;
