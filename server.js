@@ -19,7 +19,7 @@ if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'));
 }
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.SERVER_PORT || 3000;
 
 const server = app.listen(PORT, () =>
   console.log(`Listening on port ${PORT}`.yellow.bold)
