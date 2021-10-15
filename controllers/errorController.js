@@ -8,9 +8,10 @@ const handleValidatorError = (err) => {
   const message = `invalid error input ${errors.join('. ')}`;
   return new AppError(message, 400);
 };
-// jwt token isnot valid error
+// jwt token is not valid error
 const handelJwtTokenErr = () =>
   new AppError('the token is invalid please sign up', 401);
+// jwt token is expire error
 const handelJwtExpireErr = () =>
   new AppError('access token is  expired please sign in again  ', 401);
 //Production Errors
