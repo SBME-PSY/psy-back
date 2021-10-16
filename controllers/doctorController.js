@@ -1,11 +1,11 @@
-const userModel = require('../models/userModel');
+const doctorModel = require('../models/doctorModel');
 
-exports.getAlldoctors = async (req, res, next) => {
+exports.getAllDoctors = async (req, res, next) => {
   try {
-    const allUsers = await userModel.find();
+    const allDoctors = await doctorModel.find();
     res.status(200).json({
       status: 'success',
-      allUsers,
+      allDoctors,
     });
   } catch (err) {
     next(err);
