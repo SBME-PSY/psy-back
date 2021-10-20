@@ -1,63 +1,21 @@
 const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
-const bcrypt = require('bcryptjs');
 
 const userModel = require('../models/userModel');
 const doctorModel = require('../models/doctorModel');
-const adminModel = require('../models/adminModel');
 const AppError = require('../utils/appError');
 const sendEmail = require('../utils/sendEmail');
+const authFun = require('../utils/authFun');
 
-const correctPassword = async function (candidatePassword, userPassword) {
-  return await bcrypt.compare(candidatePassword, userPassword);
-};
-const getSignToken = (id) => {
-  const token = jwt.sign({ id: id }, process.env.JWT_SECRET, {
-    expiresIn: process.env.JWT_EXPIRES_IN,
-  });
-  return token;
-};
-const isCorrectPassword = async function (candidatePassword, passwordInDb) {
-  return await bcrypt.compare(candidatePassword, passwordInDb);
-};
-const IsChangedPasswordAfterGetToken = async function (
-  jwtTimeIat,
-  currentUser
-) {
-  if (currentUser.passwordChangedAt) {
-    const passwordChangedAtInSec = parseInt(
-      currentUser.passwordChangedAt.getTime() / 1000,
-      10
-    );
-
-    return jwtTimeIat < passwordChangedAtInSec;
-  }
-
-  // False means NOT changed
-  return false;
-};
-const createPasswordReset = function (currentUser) {
-  const resetToken = crypto.randomBytes(32).toString('hex');
-
-  currentUser.passwordResetToken = crypto
-    .createHash('sha256')
-    .update(resetToken)
-    .digest('hex');
-
-  //resetToken Expires after 10miute
-  currentUser.passwordResetExpires = Date.now() + 10 * 60 * 1000;
-
-  return resetToken;
-};
 exports.signUp = async (req, res, next) => {
   try {
     let newUser;
-    if (req.baseUrl === '/psy/doctor') {
+    if (req.body.role === 'doctor') {
       newUser = await doctorModel.create(req.body);
-    } else if (req.baseUrl === '/psy/user') {
+    } else if (req.body.role === 'user') {
       newUser = await userModel.create(req.body);
     }
-    const token = getSignToken(newUser._id);
+    const token = authFun.getSignToken(newUser._id);
     res.status(201).json({
       status: 'success',
       token: token,
@@ -72,23 +30,22 @@ exports.signUp = async (req, res, next) => {
 
 exports.logIn = async (req, res, next) => {
   try {
-    const { email, password } = req.body;
+    const isEmail = req.body.email.match(/^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$/);
+    console.log(isEmail);
+    const emialOrPhone = isEmail ? 'email' : 'phone';
+    console.log(emialOrPhone);
+    const emialOrPhoneValue = req.body.email;
+    const { password } = req.body;
     //1)check if the uer didint enter email or password
-    if (!email || !password) {
-      return next(new AppError('please enter email and password'), 400);
+    if (!emialOrPhoneValue || !password) {
+      return next(new AppError('please enter emailorPhone and password'), 400);
     }
-    let user;
 
-    if (req.baseUrl === '/psy/doctor') {
-      user = await doctorModel.findOne({ email: email }).select('+password');
-    } else if (req.baseUrl === '/psy/user') {
-      user = await userModel.findOne({ email: email }).select('+password');
-    } else if (req.baseUrl === '/psy/admin') {
-      user = await adminModel.findOne({ email: email }).select('+password');
-    }
+    const query = { [emialOrPhone]: emialOrPhoneValue };
+    //1)get the user or doctor
+    const user = await authFun.findUser(req, res, query); //find user that may be user or doctor
     //2)check if there is no user or check if the password is not correct
-    console.log(req.baseUrl);
-    if (!user || !(await isCorrectPassword(password, user.password))) {
+    if (!user || !(await authFun.isCorrectPassword(password, user.password))) {
       return next(
         new AppError(
           'there is no user with that email please sign up first or password is not correct'
@@ -96,7 +53,7 @@ exports.logIn = async (req, res, next) => {
         401
       );
     }
-    const token = getSignToken(user._id);
+    const token = authFun.getSignToken(user._id);
     res.status(201).json({
       status: 'success',
       data: {
@@ -136,7 +93,12 @@ exports.protect = async (req, res, next) => {
         )
       );
     // 4) Check if user change his password
-    if (await IsChangedPasswordAfterGetToken(decodedPyload.iat, currentUser)) {
+    if (
+      await authFun.IsChangedPasswordAfterGetToken(
+        decodedPyload.iat,
+        currentUser
+      )
+    ) {
       return next(
         new AppError(
           'password is changed after you get the token please sign in again  ',
@@ -152,18 +114,14 @@ exports.protect = async (req, res, next) => {
 };
 exports.forgotPassword = async (req, res, next) => {
   try {
-    // 1) Get user based on POSTed email
-    let currentUser;
-    if (req.baseUrl === '/psy/doctor') {
-      currentUser = await doctorModel.findOne({ email: req.body.email });
-    } else if (req.baseUrl === '/psy/user') {
-      currentUser = await userModel.findOne({ email: req.body.email });
-    }
+    //1)get the user or doctor
+    const query = { email: req.body.email };
+    const currentUser = await authFun.findUser(req, res, query);
     if (!currentUser) {
       return next(new AppError('no user or doctor with this email '));
     }
     // 2) Generate the random reset token and save it avraiable in db
-    const userResetPassword = await createPasswordReset(currentUser);
+    const userResetPassword = await authFun.createPasswordReset(currentUser);
     //because of we encrypte the password it will give us err that password and its confirm not equal
     await currentUser.save({ validateBeforeSave: false });
     // 3) Send it to user's email
@@ -195,18 +153,11 @@ exports.resetPassword = async (req, res, next) => {
       .createHash('sha256')
       .update(req.params.resetToken)
       .digest('hex');
-    let user;
-    if (req.baseUrl === '/psy/doctor') {
-      user = await doctorModel.findOne({
-        passwordResetToken: hashedRestToken,
-        restPasswordExpires: { $gt: Date.now() },
-      });
-    } else if (req.baseUrl === '/psy/user') {
-      user = await userModel.findOne({
-        passwordResetToken: hashedRestToken,
-        restPasswordExpires: { $gt: Date.now() },
-      });
-    }
+    const query = {
+      passwordResetToken: hashedRestToken,
+      restPasswordExpires: { $gt: Date.now() },
+    };
+    const user = await authFun.findUser(req, res, query);
     if (!user) next(new AppError('your reset token is expired'));
     //2)if its ok reset password and give the jwt
     user.password = req.body.password;
@@ -215,7 +166,7 @@ exports.resetPassword = async (req, res, next) => {
     user.passwordResetExpires = undefined;
     //we use user.save instead of user update baecause of we eed check validator
     await user.save();
-    const token = getSignToken(user._id);
+    const token = authFun.getSignToken(user._id);
     //3) change the update password at field
 
     res.status(201).json({
@@ -229,15 +180,13 @@ exports.resetPassword = async (req, res, next) => {
 exports.updatePassword = async (req, res, next) => {
   try {
     // 1) Get user from collection
-    let user;
-    if (req.baseUrl === '/psy/doctor') {
-      user = await doctorModel.findById(req.user.id).select('+password');
-      console.log(req.user._id, req.user, req.user.id);
-    } else if (req.baseUrl === '/psy/user') {
-      user = await userModel.findById(req.user.id).select('+password');
-    }
-    // 2) Check if POSTed current password is correct
-    if (!(await correctPassword(req.body.currentPassword, user.password))) {
+    const query = { _id: req.user.id };
+    console.log(query);
+    const user = await authFun.findUser(req, res, query);
+    // 2) Check if POSTed password match current password is correct
+    if (
+      !(await authFun.correctPassword(req.body.currentPassword, user.password))
+    ) {
       return next(new AppError('Your current password is wrong.', 401));
     }
 
@@ -245,7 +194,7 @@ exports.updatePassword = async (req, res, next) => {
     user.password = req.body.newPassword;
     user.confirmPassword = req.body.confirmNewPassword;
     await user.save();
-    const token = getSignToken(user._id);
+    const token = authFun.getSignToken(user._id);
 
     // User.findByIdAndUpdate will NOT work as intended!
     res.status(201).json({
