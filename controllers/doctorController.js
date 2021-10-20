@@ -1,13 +1,10 @@
 const doctorModel = require('../models/doctorModel');
+const asyncHandler = require('../middleware/asyncHandler');
 
-exports.getAllDoctors = async (req, res, next) => {
-  try {
-    const allDoctors = await doctorModel.find();
-    res.status(200).json({
-      status: 'success',
-      allDoctors,
-    });
-  } catch (err) {
-    next(err);
-  }
-};
+exports.getAllDoctors = asyncHandler(async (req, res, next) => {
+  const allDoctors = await doctorModel.find();
+  res.status(200).json({
+    status: 'success',
+    allDoctors,
+  });
+});
