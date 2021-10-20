@@ -31,7 +31,9 @@
     "mongoose": "^6.0.9",
     "morgan": "^1.10.0",
     "ndb": "^1.1.5",
-    "nodemailer": "^4.7.0"
+    "nodemailer": "^6.7.0",
+    "swagger-jsdoc": "^6.1.0",
+    "swagger-ui-express": "^4.1.6"
   },
   "devDependencies": {
     "eslint": "^7.32.0",
@@ -43,7 +45,7 @@
     "eslint-plugin-prettier": "^4.0.0",
     "eslint-plugin-react": "^7.26.1",
     "husky": "^7.0.2",
-    "lint-staged": "^7.3.0",
+    "lint-staged": "^11.2.3",
     "nodemon": "^2.0.13",
     "prettier": "^2.4.1"
   },
