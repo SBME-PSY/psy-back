@@ -24,6 +24,11 @@ const adminSchema = new mongoose.Schema({
     },
     required: [true, 'confirmpasswrd is require'],
   },
+  role: {
+    type: String,
+    enum: ['doctor', 'user', 'admin'],
+    default: 'user',
+  },
 });
 //hash the password
 adminSchema.pre('save', preSave.cryptPassword);
