@@ -13,7 +13,7 @@ const userSchema = new mongoose.Schema({
   },
   role: {
     type: String,
-    enum: ['doctor', 'user'],
+    enum: ['doctor', 'user', 'admin'],
     default: 'user',
   },
   password: {
@@ -35,7 +35,11 @@ const userSchema = new mongoose.Schema({
   },
   phone: {
     type: String,
+    maxLength: [11, 'the phone nuber is too long'],
+    minLength: [11, 'the phone nuber is too short'],
     match: [/^01[0-2]\d{1,8}$/, 'Please add a valid phone number'],
+    required: [true, 'a phone number is required'],
+    unique: true,
   },
   resetPasswordToken: String,
   resetPasswordExpire: Date,
