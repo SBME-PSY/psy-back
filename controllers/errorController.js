@@ -14,6 +14,9 @@ const handelJwtTokenErr = () =>
 // jwt token is expire error
 const handelJwtExpireErr = () =>
   new AppError('access token is  expired please sign in again  ', 401);
+const handelFileSizeErr = () =>
+  new AppError('please Upload file less than 1 mega', 500);
+
 //Production Errors
 const sendProdError = (err, req, res, next) => {
   //is Opertinal to trust that error comes from error class
@@ -48,6 +51,7 @@ const errorHandeler = (err, req, res, next) => {
     if (err.name === 'ValidationError') error = handleValidatorError(error);
     if (err.name === 'JsonWebTokenError') error = handelJwtTokenErr(error);
     if (err.name === 'TokenExpiredError') error = handelJwtExpireErr(error);
+    if (err.code === 'LIMIT_FILE_SIZE') error = handelFileSizeErr(error);
     sendProdError(error, req, res, next);
   } else if (process.env.NODE_ENV === 'development') {
     sendDevError(err, res);
