@@ -1,9 +1,11 @@
 const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
 const bcrypt = require('bcryptjs');
+const multer = require('multer');
 const userModel = require('../models/userModel');
 const doctorModel = require('../models/doctorModel');
 const adminModel = require('../models/adminModel');
+const AppError = require('./appError');
 
 exports.correctPassword = async function (candidatePassword, userPassword) {
   return await bcrypt.compare(candidatePassword, userPassword);
@@ -58,6 +60,31 @@ exports.findUser = async (req, res, query) => {
   } else if (req.body.role === 'admin') {
     user = await adminModel.findOne(query).select('+password');
   }
-  console.log(user);
   return user;
 };
+// her if func or configration for upload doctor cv
+const multerStorage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, 'public/doctorPdf');
+  },
+  filename: (req, file, cb) => {
+    const uniqueSuffix = `${Date.now()}-${Math.round(Math.random() * 1e9)}`;
+    const fileExtention = file.mimetype.split('/')[1];
+    const fileName = `doctorCv${uniqueSuffix}.${fileExtention}`;
+    cb(null, fileName);
+  },
+});
+
+const multerFilter = (req, file, cb) => {
+  if (file.mimetype.split('/')[1] === 'pdf') {
+    cb(null, true);
+  } else {
+    cb(new AppError('the file uploaded isnt pdf style', 400), false);
+  }
+};
+
+exports.upload = multer({
+  storage: multerStorage,
+  fileFilter: multerFilter,
+  limits: { fileSize: 1048576 }, //default 1 Mega ,1048576 byte is equal to 1 Mega
+});
