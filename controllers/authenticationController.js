@@ -8,9 +8,13 @@ const asyncHandler = require('../middleware/asyncHandler');
 const sendEmail = require('../utils/sendEmail');
 const authFun = require('../utils/authFun');
 
+//"cvFile" is the name comes from front end form
+exports.uloadDoctorCv = authFun.upload.single('cvFile');
+
 exports.signUp = asyncHandler(async (req, res, next) => {
   let newUser;
   if (req.body.role === 'doctor') {
+    if (req.file) req.body.cv = req.file.filename;
     newUser = await doctorModel.create(req.body);
   } else if (req.body.role === 'user') {
     newUser = await userModel.create(req.body);
@@ -39,7 +43,7 @@ exports.logIn = asyncHandler(async (req, res, next) => {
 
   const query = { [emialOrPhone]: emialOrPhoneValue };
   //1)get the user or doctor
-  const user = await authFun.findUser(req, res, query); //find user that may be user or doctor
+  const user = await authFun.findUser(req, res, query); //find user that may be userofapp or doctor
   //2)check if there is no user or check if the password is not correct
   if (!user || !(await authFun.isCorrectPassword(password, user.password))) {
     return next(
@@ -52,9 +56,9 @@ exports.logIn = asyncHandler(async (req, res, next) => {
   const token = authFun.getSignToken(user._id);
   res.status(201).json({
     status: 'success',
+    token: token,
     data: {
       tour: user,
-      token: token,
     },
   });
 });
