@@ -13,6 +13,7 @@ exports.uloadDoctorCv = authFun.upload.single('cvFile');
 
 exports.signUp = asyncHandler(async (req, res, next) => {
   let newUser;
+
   if (req.body.role === 'doctor') {
     if (req.file) req.body.cv = req.file.filename;
     newUser = await doctorModel.create(req.body);
@@ -31,9 +32,7 @@ exports.signUp = asyncHandler(async (req, res, next) => {
 
 exports.logIn = asyncHandler(async (req, res, next) => {
   const isEmail = req.body.email.match(/^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$/);
-  console.log(isEmail);
   const emialOrPhone = isEmail ? 'email' : 'phone';
-  console.log(emialOrPhone);
   const emialOrPhoneValue = req.body.email;
   const { password } = req.body;
   //1)check if the uer didint enter email or password
@@ -166,7 +165,6 @@ exports.resetPassword = asyncHandler(async (req, res, next) => {
 exports.updatePassword = asyncHandler(async (req, res, next) => {
   // 1) Get user from collection
   const query = { _id: req.user.id };
-  console.log(query);
   const user = await authFun.findUser(req, res, query);
   // 2) Check if POSTed password match current password is correct
   if (
