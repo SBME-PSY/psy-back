@@ -38,7 +38,7 @@ const doctorSchema = new mongoose.Schema({
     type: String,
     maxLength: [11, 'the phone nuber is too long'],
     minLength: [11, 'the phone nuber is too short'],
-    match: [/^01[0-2]\d{1,8}$/, 'Please add a valid phone number'],
+    match: [/^(\+2)?01[0-25]\d{8}$/, 'Please add a valid phone number'],
     required: [true, 'a phone number is required'],
     unique: true,
   },
