@@ -8,7 +8,7 @@ const connectDB = require('./config/db');
 connectDB();
 const app = require('./app');
 
-const PORT = process.env.PORT || 8000;
+const PORT = process.env.PORT || 3000;
 
 const server = app.listen(PORT, () =>
   console.log(`Listening on port ${PORT}`.yellow.bold)

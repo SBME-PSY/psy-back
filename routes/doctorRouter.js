@@ -5,7 +5,7 @@ const doctorController = require('../controllers/doctorController');
 
 const router = express.Router();
 router
-  .route('/getAllDoctors')
+  .route('/')
   .get(authentcationController.protect, doctorController.getAllDoctors);
 
 router

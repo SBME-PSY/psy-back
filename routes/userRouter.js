@@ -5,6 +5,6 @@ const userController = require('../controllers/userController');
 
 const router = express.Router();
 router
-  .route('/getAllUsers')
+  .route('/')
   .get(authentcationController.protect, userController.getAllUsers);
 module.exports = router;

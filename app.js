@@ -16,9 +16,9 @@ if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'));
 }
 
-app.use('/psy/user', authRouter, userRouter);
-app.use('/psy/doctor', authRouter, doctorRouter);
-app.use('/psy/admin', authRouter, adminRouter);
+app.use('/psy/users', authRouter, userRouter);
+app.use('/psy/doctors', authRouter, doctorRouter);
+app.use('/psy/admins', authRouter, adminRouter);
 app.use('*', (req, res, next) => {
   next(new AppError('this route is not defind ', 400));
 });
