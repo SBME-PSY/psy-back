@@ -33,6 +33,7 @@
     "multer": "^1.4.3",
     "ndb": "^1.1.5",
     "nodemailer": "^6.7.0",
+    "sharp": "^0.29.2",
     "swagger-jsdoc": "^6.1.0",
     "swagger-ui-express": "^4.1.6"
   },
