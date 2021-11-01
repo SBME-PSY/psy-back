@@ -8,7 +8,8 @@
     "dev": "nodemon server.js",
     "prepare": "husky install",
     "prod": "NODE_ENV=production node server.js",
-    "debug": "ndb server.js"
+    "debug": "ndb server.js",
+    "test": "mocha --timeout 100000"
   },
   "repository": {
     "type": "git",
@@ -22,11 +23,14 @@
   "homepage": "https://github.com/SBME-PSY/psy-back#readme",
   "dependencies": {
     "bcryptjs": "^2.4.3",
+    "chai": "^4.3.4",
+    "chai-http": "^4.3.0",
     "colors": "^1.4.0",
     "cors": "^2.8.5",
     "dotenv": "^10.0.0",
     "express": "^4.17.1",
     "jsonwebtoken": "^8.5.1",
+    "mocha": "^9.1.3",
     "mongodb": "^4.1.3",
     "mongoose": "^6.0.9",
     "morgan": "^1.10.0",
