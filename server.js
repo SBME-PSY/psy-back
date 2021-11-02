@@ -1,23 +1,12 @@
-const express = require('express');
-const cors = require('cors');
-const morgan = require('morgan');
 const dotenv = require('dotenv');
 // eslint-disable-next-line no-unused-vars
 const colors = require('colors');
-const connectDB = require('./config/db');
 
 dotenv.config({ path: './config/config.env' });
+const connectDB = require('./config/db');
 
 connectDB();
-
-const app = express();
-
-app.use(express.json());
-app.use(cors());
-
-if (process.env.NODE_ENV === 'development') {
-  app.use(morgan('dev'));
-}
+const app = require('./app');
 
 const PORT = process.env.PORT || 3000;
 
@@ -31,3 +20,5 @@ process.on('unhandledRejection', (err, promise) => {
   // Close server & exit
   server.close(() => process.exit(1));
 });
+
+module.exports = server;
