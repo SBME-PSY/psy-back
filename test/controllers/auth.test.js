@@ -1,12 +1,10 @@
 const chai = require('chai');
 const chaiHttp = require('chai-http');
-const mocha = require('mocha');
+const { describe, it, beforeEach } = require('mocha');
 
-chai.Assertion.includeStack = true; // defaults to false
 chai.config.includeStack = true;
-const { describe, it, beforeEach } = mocha;
-const server = require('../server');
-const userModel = require('../models/userModel');
+const server = require('../../server');
+const userModel = require('../../models/userModel');
 
 //Assertion Style
 chai.should();

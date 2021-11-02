@@ -9,7 +9,7 @@
     "prepare": "husky install",
     "prod": "NODE_ENV=production node server.js",
     "debug": "ndb server.js",
-    "test": "mocha --timeout 100000"
+    "test": "mocha --require test/mocha.env.js test/**/*.test.js --timeout 10000"
   },
   "repository": {
     "type": "git",
@@ -42,6 +42,8 @@
     "swagger-ui-express": "^4.1.6"
   },
   "devDependencies": {
+    "chai": "^4.3.4",
+    "chai-http": "^4.3.0",
     "eslint": "^7.32.0",
     "eslint-config-airbnb": "^18.2.1",
     "eslint-config-prettier": "^8.3.0",
@@ -52,6 +54,7 @@
     "eslint-plugin-react": "^7.26.1",
     "husky": "^7.0.2",
     "lint-staged": "^11.2.3",
+    "mocha": "^9.1.3",
     "nodemon": "^2.0.13",
     "prettier": "^2.4.1"
   },
