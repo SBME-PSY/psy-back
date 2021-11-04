@@ -27,5 +27,16 @@ jobs:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
     - run: npm ci
-    - run: npm run build --if-present
     - run: npm test
+      env:
+        MONGO_URL_TEST: ${{secrets.MONGO_URL_TEST}}
+        PASSWORD: ${{secrets.MONGO_URL_PASSWORD}}
+        PORT: 3000
+        JWT_SECRET: ${{secrets.JWT_SECRET}}
+        JWT_EXPIRES_IN: 90d
+        EMAIL_HOST: smtp.mailtrap.io
+        EMAIL_PORT: 587
+        EMAIL_USER_NAME: ${{secrets.EMAIL_USER_NAME}}
+        EMAIL_PASSWORD: ${{secrets.EMAIL_PASSWORD}}
+        
+        
