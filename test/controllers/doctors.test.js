@@ -1,5 +1,6 @@
 const path = require('path');
 const chai = require('chai');
+const fs = require('fs');
 
 const { assert } = chai;
 const chaiHttp = require('chai-http');
@@ -16,16 +17,17 @@ chai.use(chaiHttp);
 
 describe('Doctor Controller', () => {
   let token = '';
+  const createdFiles = [];
+  const doctor = {
+    name: 'saaed',
+    password: 'Saeed1234__',
+    confirmPassword: 'Saeed1234__',
+    email: 'ramadan@gmail.com',
+    role: 'doctor',
+    phone: '01005172445',
+    cvFile: path.resolve(__dirname, '../data/dummyCV.pdf'),
+  };
   before((done) => {
-    const doctor = {
-      name: 'saaed',
-      password: 'Saeed1234__',
-      confirmPassword: 'Saeed1234__',
-      email: 'ramadan@gmail.com',
-      role: 'doctor',
-      phone: '01005172445',
-    };
-
     chai
       .request(server)
       .post('/psy/doctors/signup')
@@ -36,10 +38,16 @@ describe('Doctor Controller', () => {
       .field('confirmPassword', doctor.confirmPassword)
       .field('role', doctor.role)
       .field('phone', doctor.phone)
-      .attach('cvFile', path.resolve(__dirname, '../data/dummyCV.pdf'))
+      .attach('cvFile', doctor.cvFile)
       .then((res) => {
         // eslint-disable-next-line prefer-destructuring
         token = res.body.token;
+        return doctorModel.findOne({ email: doctor.email }).select('cv');
+      })
+      .then((doc) => {
+        createdFiles.push(
+          path.resolve(__dirname, `../../public/doctorPdf/${doc.cv}`)
+        );
         return done();
       })
       .catch(done);
@@ -48,7 +56,12 @@ describe('Doctor Controller', () => {
   after((done) => {
     doctorModel
       .deleteMany({})
-      .then(() => done())
+      .then(() => {
+        createdFiles.forEach((file) => {
+          fs.unlinkSync(file, (err) => done(err));
+        });
+        return done();
+      })
       .catch(done);
   });
 
@@ -112,6 +125,15 @@ describe('Doctor Controller', () => {
       )
       .then((res) => {
         res.should.have.status(200);
+        return doctorModel.findOne({ phone: doctor.phone }).select('picture');
+      })
+      .then((doc) => {
+        createdFiles.push(
+          path.resolve(
+            __dirname,
+            `../../public/doctors/profile-picture/${doc.picture}`
+          )
+        );
         return done();
       })
       .catch(done);
