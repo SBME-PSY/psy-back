@@ -1,5 +1,7 @@
 const path = require('path');
 const chai = require('chai');
+
+const { assert } = chai;
 const chaiHttp = require('chai-http');
 const { describe, it, before, after } = require('mocha');
 
@@ -57,7 +59,8 @@ describe('Doctor Controller', () => {
       .then((res) => {
         res.should.have.status(500);
         return done();
-      });
+      })
+      .catch(done);
   });
 
   it('GET /psy/doctors/profile', (done) => {
@@ -70,7 +73,8 @@ describe('Doctor Controller', () => {
         res.body.data.should.have.property('name', 'saaed');
         res.body.data.should.have.property('email', 'ramadan@gmail.com');
         return done();
-      });
+      })
+      .catch(done);
   });
 
   it('PATCH /psy/doctors/profile', (done) => {
@@ -91,6 +95,23 @@ describe('Doctor Controller', () => {
         res.body.data.should.have.property('email', 'ramadan123@gmail.com');
         res.body.data.should.have.property('role', 'doctor');
         res.body.data.should.have.property('status', 'pending');
+        return done();
+      })
+      .catch(done);
+  });
+
+  it('PATCH /psy/doctors/profile upload profile picture', (done) => {
+    chai
+      .request(server)
+      .patch('/psy/doctors/profile')
+      .set('Authorization', `Bearer ${token}`)
+      .field('Content-Type', 'multipart/form-data')
+      .attach(
+        'profilePicture',
+        path.resolve(__dirname, '../data/profile-picture.svg')
+      )
+      .then((res) => {
+        res.should.have.status(200);
         return done();
       })
       .catch(done);
