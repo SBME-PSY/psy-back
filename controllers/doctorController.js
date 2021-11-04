@@ -23,7 +23,6 @@ exports.updateDoctorProfile = asyncHandler(async (req, res, next) => {
 
   if (req.body.name && !req.file) {
     const temp = await doctorModel.findById(req.user.id).select('picture');
-    console.log(temp);
     const uri = 'https://avatars.dicebear.com/api/initials/';
     if (temp.picture.startsWith(uri)) {
       const initials = req.body.name
