@@ -6,7 +6,7 @@ exports.getAllDoctors = asyncHandler(async (req, res, next) => {
   const allDoctors = await doctorModel.find();
   res.status(200).json({
     status: 'success',
-    allDoctors,
+    data: allDoctors,
   });
 });
 

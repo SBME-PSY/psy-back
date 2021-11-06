@@ -156,4 +156,18 @@ describe('Doctor Controller', () => {
       })
       .catch(done);
   });
+
+  it('GET /psy/doctors', (done) => {
+    chai
+      .request(server)
+      .get('/psy/doctors')
+      .set('Authorization', `Bearer ${token}`)
+      .then((res) => {
+        res.should.have.status(200);
+        res.body.data.should.be.a('array');
+        res.body.data.length.should.be.eql(1);
+        return done();
+      })
+      .catch(done);
+  });
 });
