@@ -1,3 +1,4 @@
+const fs = require('fs');
 const path = require('path');
 const chai = require('chai');
 
@@ -50,7 +51,8 @@ describe('Doctor Controller', () => {
       })
       .catch(done);
   });
-  it('POST /psy/doctors/logIn ', (done) => {
+
+  it('POST /psy/doctors/login', (done) => {
     const loginData = {
       email: doctor.email,
       password: doctor.password,
@@ -58,17 +60,17 @@ describe('Doctor Controller', () => {
     };
     chai
       .request(server)
-      .post('/psy/doctors/logIn')
+      .post('/psy/doctors/login')
       .send(loginData)
       .then((res) => {
         res.should.have.status(200);
+        res.body.should.be.a('object');
         // eslint-disable-next-line prefer-destructuring
         token = res.body.token;
         return done();
       })
-      .catch(done);
+      .catch((err) => done(err));
   });
-  // eslint-disable-next-line no-unused-vars
   let userResetPassword = '';
   it('POST /psy/doctors/forgot-password', (done) => {
     // eslint-disable-next-line camelcase
@@ -86,10 +88,9 @@ describe('Doctor Controller', () => {
         userResetPassword = res.body.userResetPassword;
         return done();
       })
-      .catch(done);
+      .catch((err) => done(err));
   });
   it(`POST /psy/doctors/reset-password/${userResetPassword}`, (done) => {
-    // eslint-disable-next-line camelcase
     const newPassword = {
       password: '123456789ss',
       confirmPassword: '123456789ss',
@@ -223,6 +224,18 @@ describe('Doctor Controller', () => {
         res.should.have.status(200);
         res.body.data.should.be.a('array');
         res.body.data.length.should.be.eql(1);
+        return done();
+      })
+      .catch(done);
+  });
+
+  after((done) => {
+    doctorModel
+      .deleteMany({})
+      .then(() => {
+        createdFiles.forEach((file) => {
+          fs.unlinkSync(file, (err) => done(err));
+        });
         return done();
       })
       .catch(done);

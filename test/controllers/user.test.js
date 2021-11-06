@@ -32,7 +32,7 @@ describe('User controller', () => {
       })
       .catch(done);
   });
-  it('POST /psy/users/logIn ', (done) => {
+  it('POST /psy/users/login ', (done) => {
     const loginData = {
       email: user.email,
       password: user.password,
@@ -40,7 +40,7 @@ describe('User controller', () => {
     };
     chai
       .request(server)
-      .post('/psy/users/logIn')
+      .post('/psy/users/login')
       .send(loginData)
       .then((res) => {
         res.should.have.status(200);
