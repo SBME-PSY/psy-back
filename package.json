@@ -9,7 +9,8 @@
     "prepare": "husky install",
     "prod": "NODE_ENV=production node server.js",
     "debug": "ndb server.js",
-    "test": "mocha --require test/mocha.env.js test/**/*.test.js --timeout 10000 --exit"
+    "test": "mocha --require test/mocha.env.js test/**/*.test.js --timeout 10000 --exit",
+    "test-with-coverage": "nyc --reporter=text mocha --require test/mocha.env.js test/**/*.test.js --timeout 10000 --exit"
   },
   "repository": {
     "type": "git",
@@ -55,7 +56,9 @@
     "husky": "^7.0.2",
     "lint-staged": "^11.2.3",
     "mocha": "^9.1.3",
-    "prettier": "2.4.1"
+    "nodemon": "^2.0.13",
+    "nyc": "^15.1.0",
+    "prettier": "^2.4.1"
   },
   "lint-staged": {
     "*.js": "eslint --cache --fix",

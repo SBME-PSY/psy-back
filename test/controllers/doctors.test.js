@@ -1,5 +1,6 @@
 const path = require('path');
 const chai = require('chai');
+
 const chaiHttp = require('chai-http');
 const { describe, it, before, after } = require('mocha');
 
@@ -14,6 +15,7 @@ chai.use(chaiHttp);
 
 describe('Doctor Controller', () => {
   let token = '';
+  const createdFiles = [];
   const doctor = {
     name: 'saaed',
     password: 'Saeed1234__',
@@ -21,6 +23,7 @@ describe('Doctor Controller', () => {
     email: 'ramadan@gmail.com',
     role: 'doctor',
     phone: '01005172445',
+    cvFile: path.resolve(__dirname, '../data/dummyCV.pdf'),
   };
   before((done) => {
     chai
@@ -33,10 +36,16 @@ describe('Doctor Controller', () => {
       .field('confirmPassword', doctor.confirmPassword)
       .field('role', doctor.role)
       .field('phone', doctor.phone)
-      .attach('cvFile', path.resolve(__dirname, '../data/dummyCV.pdf'))
+      .attach('cvFile', doctor.cvFile)
       .then((res) => {
         // eslint-disable-next-line prefer-destructuring
         token = res.body.token;
+        return doctorModel.findOne({ email: doctor.email }).select('cv');
+      })
+      .then((doc) => {
+        createdFiles.push(
+          path.resolve(__dirname, `../../public/doctorPdf/${doc.cv}`)
+        );
         return done();
       })
       .catch(done);
@@ -134,7 +143,8 @@ describe('Doctor Controller', () => {
         res.body.data.should.have.property('name', 'saaed');
         res.body.data.should.have.property('email', 'ramadan@gmail.com');
         return done();
-      });
+      })
+      .catch(done);
   });
 
   it('PATCH /psy/doctors/profile', (done) => {
@@ -155,6 +165,32 @@ describe('Doctor Controller', () => {
         res.body.data.should.have.property('email', 'ramadan123@gmail.com');
         res.body.data.should.have.property('role', 'doctor');
         res.body.data.should.have.property('status', 'pending');
+        return done();
+      })
+      .catch(done);
+  });
+
+  it('PATCH /psy/doctors/profile upload profile picture', (done) => {
+    chai
+      .request(server)
+      .patch('/psy/doctors/profile')
+      .set('Authorization', `Bearer ${token}`)
+      .field('Content-Type', 'multipart/form-data')
+      .attach(
+        'profilePicture',
+        path.resolve(__dirname, '../data/profile-picture.svg')
+      )
+      .then((res) => {
+        res.should.have.status(200);
+        return doctorModel.findOne({ phone: doctor.phone }).select('picture');
+      })
+      .then((doc) => {
+        createdFiles.push(
+          path.resolve(
+            __dirname,
+            `../../public/doctors/profile-picture/${doc.picture}`
+          )
+        );
         return done();
       })
       .catch(done);
