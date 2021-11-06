@@ -53,7 +53,7 @@ exports.logIn = asyncHandler(async (req, res, next) => {
     );
   }
   const token = authFun.getSignToken(user._id);
-  res.status(201).json({
+  res.status(200).json({
     status: 'success',
     token: token,
     data: {
@@ -117,7 +117,7 @@ exports.forgotPassword = asyncHandler(async (req, res, next) => {
   // 3) Send it to user's email
   const resetURL = `${req.protocol}://${req.get('host')}${
     req.baseUrl
-  }/resetPassword/${userResetPassword}`;
+  }/reset-password/${userResetPassword}`;
 
   const message = `Forgot your password? Submit a PATCH request with your 
       new password and passwordConfirm to: ${resetURL}.\nIf you didn't forget 
@@ -131,6 +131,7 @@ exports.forgotPassword = asyncHandler(async (req, res, next) => {
   res.status(200).json({
     status: 'success',
     message: 'Token sent to email!',
+    userResetPassword,
   });
 });
 
@@ -156,7 +157,7 @@ exports.resetPassword = asyncHandler(async (req, res, next) => {
   const token = authFun.getSignToken(user._id);
   //3) change the update password at field
 
-  res.status(201).json({
+  res.status(200).json({
     status: 'success',
     token,
   });
@@ -180,7 +181,7 @@ exports.updatePassword = asyncHandler(async (req, res, next) => {
   const token = authFun.getSignToken(user._id);
 
   // User.findByIdAndUpdate will NOT work as intended!
-  res.status(201).json({
+  res.status(200).json({
     status: 'success',
     token,
   });
