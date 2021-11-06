@@ -29,6 +29,7 @@ jobs:
     - run: npm ci
     - run: npm test
       env:
+        MONGO_URL_DEV: ${{secrets.MONGO_URL_DEV}}
         MONGO_URL_TEST: ${{secrets.MONGO_URL_TEST}}
         PASSWORD: ${{secrets.MONGO_URL_PASSWORD}}
         PORT: 3000
