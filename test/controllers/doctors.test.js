@@ -1,8 +1,6 @@
 const path = require('path');
 const chai = require('chai');
-const fs = require('fs');
 
-const { assert } = chai;
 const chaiHttp = require('chai-http');
 const { describe, it, before, after } = require('mocha');
 
@@ -52,30 +50,89 @@ describe('Doctor Controller', () => {
       })
       .catch(done);
   });
-
-  after((done) => {
-    doctorModel
-      .deleteMany({})
-      .then(() => {
-        createdFiles.forEach((file) => {
-          fs.unlinkSync(file, (err) => done(err));
-        });
-        return done();
-      })
-      .catch(done);
-  });
-
-  it("Can't GET /psy/doctors/profile without token", (done) => {
+  it('POST /psy/doctors/logIn ', (done) => {
+    const loginData = {
+      email: doctor.email,
+      password: doctor.password,
+      role: 'doctor',
+    };
     chai
       .request(server)
-      .get('/psy/doctors/profile')
+      .post('/psy/doctors/logIn')
+      .send(loginData)
       .then((res) => {
-        res.should.have.status(500);
+        res.should.have.status(200);
+        // eslint-disable-next-line prefer-destructuring
+        token = res.body.token;
         return done();
       })
       .catch(done);
   });
+  // eslint-disable-next-line no-unused-vars
+  let userResetPassword = '';
+  it('POST /psy/doctors/forgot-password', (done) => {
+    // eslint-disable-next-line camelcase
+    const email_role = {
+      email: doctor.email,
+      role: doctor.role,
+    };
+    chai
+      .request(server)
+      .post('/psy/doctors/forgot-password')
+      .send(email_role)
+      .then((res) => {
+        res.should.have.status(200);
+        // eslint-disable-next-line prefer-destructuring
+        userResetPassword = res.body.userResetPassword;
+        return done();
+      })
+      .catch(done);
+  });
+  it(`POST /psy/doctors/reset-password/${userResetPassword}`, (done) => {
+    // eslint-disable-next-line camelcase
+    const newPassword = {
+      password: '123456789ss',
+      confirmPassword: '123456789ss',
+      role: doctor.role,
+    };
+    console.log(`/psy/doctors/reset-password/${userResetPassword}`);
+    chai
+      .request(server)
+      .patch(`/psy/doctors/reset-password/${userResetPassword}`)
+      .send(newPassword)
+      .then((res) => {
+        res.should.have.status(200);
+        // eslint-disable-next-line prefer-destructuring
+        token = res.body.token;
+        doctor.password = newPassword.password;
+        doctor.confirmPassword = newPassword.confirmPassword;
 
+        return done();
+      })
+      .catch(done);
+  });
+  it('PATCH /psy/doctors/update-password', (done) => {
+    const updatedPassword = {
+      currentPassword: doctor.password,
+      newPassword: '12345678s',
+      confirmNewPassword: '12345678s',
+      role: doctor.role,
+    };
+    chai
+      .request(server)
+      .patch('/psy/doctors/update-password')
+      .set('Authorization', `Bearer ${token}`)
+      .send(updatedPassword)
+      .then((res) => {
+        res.should.have.status(200);
+        doctor.password = updatedPassword.password;
+        doctor.confirmPassword = updatedPassword.confirmNewPassword;
+        // eslint-disable-next-line prefer-destructuring
+        token = res.body.token;
+        return done();
+      })
+      .catch(done);
+  });
   it('GET /psy/doctors/profile', (done) => {
     chai
       .request(server)
