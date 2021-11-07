@@ -42,7 +42,7 @@ exports.logIn = asyncHandler(async (req, res, next) => {
 
   const query = { [emialOrPhone]: emialOrPhoneValue };
   //1)get the user or doctor
-  const user = await authFun.findUser(req, res, query); //find user that may be userofapp or doctor
+  const user = await authFun.findUser(req, res, query); //find user that may be userof app or doctor
   //2)check if there is no user or check if the password is not correct
   if (!user || !(await authFun.isCorrectPassword(password, user.password))) {
     return next(
