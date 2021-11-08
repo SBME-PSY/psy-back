@@ -8,9 +8,6 @@ const asyncHandler = require('../middleware/asyncHandler');
 const sendEmail = require('../utils/sendEmail');
 const authFun = require('../utils/authFun');
 
-//"cvFile" is the name comes from front end form
-exports.uloadDoctorCv = authFun.upload.single('cvFile');
-
 exports.signUp = asyncHandler(async (req, res, next) => {
   let newUser;
 
