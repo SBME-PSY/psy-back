@@ -1,11 +1,9 @@
 const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
 const bcrypt = require('bcryptjs');
-const multer = require('multer');
 const userModel = require('../models/userModel');
 const doctorModel = require('../models/doctorModel');
 const adminModel = require('../models/adminModel');
-const AppError = require('./appError');
 
 exports.correctPassword = async function (candidatePassword, userPassword) {
   return await bcrypt.compare(candidatePassword, userPassword);
@@ -20,10 +18,7 @@ exports.getSignToken = (id) => {
 exports.isCorrectPassword = async function (candidatePassword, passwordInDb) {
   return await bcrypt.compare(candidatePassword, passwordInDb);
 };
-exports.IsChangedPasswordAfterGetToken = async function (
-  jwtTimeIat,
-  currentUser
-) {
+exports.IsChangedPasswordAfterGetToken = function (jwtTimeIat, currentUser) {
   if (currentUser.passwordChangedAt) {
     const passwordChangedAtInSec = parseInt(
       currentUser.passwordChangedAt.getTime() / 1000,
