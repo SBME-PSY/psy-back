@@ -20,7 +20,7 @@ app.use('/psy/users', authRouter, userRouter);
 app.use('/psy/doctors', authRouter, doctorRouter);
 app.use('/psy/admins', authRouter, adminRouter);
 app.use('*', (req, res, next) => {
-  next(new AppError('this route is not defind ', 400));
+  next(new AppError('This route is not defind ', 404));
 });
 app.use(errorHandeler);
 module.exports = app;

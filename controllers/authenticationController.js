@@ -24,9 +24,7 @@ exports.signUp = asyncHandler(async (req, res, next) => {
   res.status(201).json({
     status: 'success',
     token: token,
-    data: {
-      tour: newUser,
-    },
+    data: newUser,
   });
 });
 
@@ -37,7 +35,10 @@ exports.logIn = asyncHandler(async (req, res, next) => {
   const { password } = req.body;
   //1)check if the uer didint enter email or password
   if (!emialOrPhoneValue || !password) {
-    return next(new AppError('please enter emailorPhone and password'), 400);
+    return next(
+      new AppError('Please enter either email or phone and password'),
+      400
+    );
   }
 
   const query = { [emialOrPhone]: emialOrPhoneValue };
@@ -46,9 +47,7 @@ exports.logIn = asyncHandler(async (req, res, next) => {
   //2)check if there is no user or check if the password is not correct
   if (!user || !(await authFun.isCorrectPassword(password, user.password))) {
     return next(
-      new AppError(
-        'there is no user with that email please sign up first or password is not correct'
-      ),
+      new AppError('Email and password compination is not correct'),
       401
     );
   }
@@ -56,9 +55,7 @@ exports.logIn = asyncHandler(async (req, res, next) => {
   res.status(201).json({
     status: 'success',
     token: token,
-    data: {
-      tour: user,
-    },
+    data: user,
   });
 });
 
@@ -92,12 +89,7 @@ exports.protect = asyncHandler(async (req, res, next) => {
   if (
     await authFun.IsChangedPasswordAfterGetToken(decodedPyload.iat, currentUser)
   ) {
-    return next(
-      new AppError(
-        'password is changed after you get the token please sign in again  ',
-        401
-      )
-    );
+    return next(new AppError('You tried to login with old password', 401));
   }
   req.user = currentUser;
   next();
@@ -108,7 +100,7 @@ exports.forgotPassword = asyncHandler(async (req, res, next) => {
   const query = { email: req.body.email };
   const currentUser = await authFun.findUser(req, res, query);
   if (!currentUser) {
-    return next(new AppError('no user or doctor with this email '));
+    return next(new AppError('no user or doctor with this email'));
   }
   // 2) Generate the random reset token and save it avraiable in db
   const userResetPassword = await authFun.createPasswordReset(currentUser);
