@@ -13,26 +13,27 @@ const adminSchema = new mongoose.Schema({
     minlength: 6,
     select: false,
   },
-  confirmPassword: {
-    type: String,
-    validate: {
-      // this work only on .Save or create not work  in update
-      validator: function (val) {
-        return this.password === val;
-      },
-      message: 'the password should be the same as confirmPassword',
-    },
-    required: [true, 'confirmpasswrd is require'],
-  },
   role: {
     type: String,
     enum: ['doctor', 'user', 'admin'],
     default: 'user',
   },
+  createdAt: {
+    type: Date,
+    default: Date.now,
+  },
+  updatedAt: {
+    type: Date,
+    default: Date.now,
+  },
 });
 //hash the password
 adminSchema.pre('save', preSave.cryptPassword);
 adminSchema.pre('save', preSave.setTimePasswordChangedAt);
-const adminModel = mongoose.model('adminmodels', adminSchema);
+adminSchema.pre('save', function (next) {
+  this.updatedAt = Date.now();
+  next();
+});
+const adminModel = mongoose.model('Admin', adminSchema);
 
 module.exports = adminModel;
