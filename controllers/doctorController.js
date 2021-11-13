@@ -1,6 +1,9 @@
 const crypto = require('crypto');
+const path = require('path');
+const fs = require('fs');
 const doctorModel = require('../models/doctorModel');
 const asyncHandler = require('../middleware/asyncHandler');
+const AppError = require('../utils/appError');
 
 exports.getAllDoctors = asyncHandler(async (req, res, next) => {
   const allDoctors = await doctorModel.find();
@@ -13,9 +16,28 @@ exports.getAllDoctors = asyncHandler(async (req, res, next) => {
 exports.getDoctorProfile = asyncHandler(async (req, res, next) => {
   const doctor = await doctorModel
     .findById(req.user.id)
-    .select('name email picture createdAt');
+    .select('name email picture createdAt address phone sex maritalStatus');
 
-  res.status(200).json({ success: true, data: doctor });
+  if (doctor.picture.startsWith('https://')) {
+    return res.status(200).json({ success: true, data: doctor });
+  }
+
+  fs.readFile(
+    path.join(__dirname, `../public/doctors/profile-picture/${doctor.picture}`),
+    (err, data) => {
+      if (err) {
+        return new AppError("Couldn't retrieve doctor image", 500);
+      }
+      const base64PictureUrl = `data:image/${
+        doctor.picture.split('.')[1]
+      };base64,${Buffer.from(data, 'base64')}`;
+      doctor.picture = base64PictureUrl;
+      res.status(200).json({
+        status: 'success',
+        data: doctor,
+      });
+    }
+  );
 });
 
 exports.updateDoctorProfile = asyncHandler(async (req, res, next) => {
@@ -30,7 +52,7 @@ exports.updateDoctorProfile = asyncHandler(async (req, res, next) => {
         .split(' ')
         .reduce((init, str) => init + str[0], '');
       const seed = crypto.randomBytes(5).toString('hex');
-      const picURL = `${uri + initials + seed}.svg`;
+      const picURL = `${uri + initials + seed}?size=50&radius=50.svg`;
       req.body.picture = picURL;
     }
   }

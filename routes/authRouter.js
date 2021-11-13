@@ -5,17 +5,15 @@ const authentcationController = require('../controllers/authenticationController
 const fileUpload = require('../middleware/fileUpload');
 
 const router = express.Router();
-router
-  .route('/signup')
-  .post(
-    fileUpload.setUploadParameters(
-      'doctorCV',
-      path.resolve(__dirname, '../public/doctors/cvFile'),
-      'pdf'
-    ),
-    fileUpload.professionalCV,
-    authentcationController.signUp
-  );
+router.route('/signup').post(
+  // fileUpload.setUploadParameters(
+  //   'doctorCV',
+  //   path.resolve(__dirname, '../public/doctors/cvFile'),
+  //   'pdf'
+  // ),
+  // fileUpload.professionalCV,
+  authentcationController.signUp
+);
 router.route('/login').post(authentcationController.logIn);
 router.route('/forgot-password').post(authentcationController.forgotPassword);
 router

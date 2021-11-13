@@ -1,3 +1,4 @@
+const fs = require('fs');
 const multer = require('multer');
 const AppError = require('../controllers/errorController');
 
@@ -39,4 +40,33 @@ exports.setUploadParameters = (prefix, path, MIME) => (req, res, next) => {
   req.filePath = path;
   req.fileMimeType = MIME;
   next();
+};
+
+exports.base64Upload = (req, res, next) => {
+  if (req.body.base64) {
+    const { base64 } = req.body;
+    const { filePrefix, filePath } = req;
+    const uniqueSuffix = `${Date.now()}-${Math.round(Math.random() * 1e9)}`;
+    const fileExtention = base64.split(';')[0].split('/')[1];
+    const fileName = `${filePrefix}-${uniqueSuffix}.${fileExtention}`;
+    const base64Data = base64.split(',')[1];
+    fs.writeFile(`${filePath}/${fileName}`, base64Data, 'base64', (err) => {
+      if (err) {
+        return next(new AppError('Error while uploading file', 500));
+      }
+      req.file = {
+        fieldname: 'base64',
+        originalname: null,
+        encoding: '7bit',
+        mimetype: `image/${fileExtention}`,
+        destination: req.filePath,
+        filename: fileName,
+        path: filePath,
+        size: 6,
+      };
+      next();
+    });
+  } else {
+    next();
+  }
 };

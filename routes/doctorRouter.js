@@ -21,8 +21,16 @@ router
       path.resolve(__dirname, '../public/doctors/profile-picture'),
       'image'
     ),
-    fileUpload.profilePicture,
-    advancedResults.filterBody('name', 'email', 'phone'),
+    fileUpload.base64Upload,
+    advancedResults.filterBody(
+      'name',
+      'email',
+      'phone',
+      'sex',
+      'maritalStatus',
+      'picture',
+      'address'
+    ),
     doctorController.updateDoctorProfile
   );
 module.exports = router;
