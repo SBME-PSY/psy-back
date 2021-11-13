@@ -42,6 +42,7 @@ const sendDevError = (err, res) => {
 const errorHandeler = (err, req, res, next) => {
   err.statusCode = err.statusCode || 500; //if it is not opertional it will be 500
   err.status = err.status || 'fail'; //if it is not opertional it will be 500
+  console.log(err);
   if (process.env.NODE_ENV === 'production') {
     // eslint-disable-next-line node/no-unsupported-features/es-syntax
     let error = { ...err };
