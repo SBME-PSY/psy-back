@@ -9,7 +9,7 @@ exports.getAllDoctors = asyncHandler(async (req, res, next) => {
   const allDoctors = await doctorModel.find();
   res.status(200).json({
     status: 'success',
-    allDoctors,
+    data: allDoctors,
   });
 });
 
@@ -52,7 +52,7 @@ exports.updateDoctorProfile = asyncHandler(async (req, res, next) => {
         .split(' ')
         .reduce((init, str) => init + str[0], '');
       const seed = crypto.randomBytes(5).toString('hex');
-      const picURL = `${uri + initials + seed}?size=50&radius=50.svg`;
+      const picURL = `${uri + initials + seed}.svg?size=50&radius=50`;
       req.body.picture = picURL;
     }
   }
@@ -62,5 +62,5 @@ exports.updateDoctorProfile = asyncHandler(async (req, res, next) => {
     runValidators: true,
   });
 
-  res.status(200).json({ success: true, data: doctor });
+  res.status(200).json({ status: 'success', data: doctor });
 });

@@ -4,12 +4,15 @@ const advancedResults = require('../middleware/advancedResults');
 const fileUpload = require('../middleware/fileUpload');
 
 const authentcationController = require('../controllers/authenticationController');
+const authenticate = require('../controllers/authentication/doctorAuthentication');
 const doctorController = require('../controllers/doctorController');
 
 const router = express.Router();
 router
   .route('/')
   .get(authentcationController.protect, doctorController.getAllDoctors);
+
+router.route('/signup').post(authenticate.signUp);
 
 router
   .route('/profile')

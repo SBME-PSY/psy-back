@@ -17,7 +17,7 @@ if (process.env.NODE_ENV === 'development') {
 }
 
 app.use('/psy/users', authRouter, userRouter);
-app.use('/psy/doctors', authRouter, doctorRouter);
+app.use('/psy/doctors', doctorRouter);
 app.use('/psy/admins', authRouter, adminRouter);
 app.use('*', (req, res, next) => {
   next(new AppError('This route is not defind ', 404));
