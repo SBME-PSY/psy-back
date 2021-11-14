@@ -4,13 +4,11 @@ const fs = require('fs');
 const doctorModel = require('../models/doctorModel');
 const asyncHandler = require('../middleware/asyncHandler');
 const AppError = require('../utils/appError');
+const responceMiddleware = require('../middleware/responceMiddleware');
 
 exports.getAllDoctors = asyncHandler(async (req, res, next) => {
   const allDoctors = await doctorModel.find();
-  res.status(200).json({
-    status: 'success',
-    data: allDoctors,
-  });
+  responceMiddleware.sendResponse(res, 200, 'success', allDoctors, null, null);
 });
 
 exports.getDoctorProfile = asyncHandler(async (req, res, next) => {
@@ -32,10 +30,7 @@ exports.getDoctorProfile = asyncHandler(async (req, res, next) => {
         doctor.picture.split('.')[1]
       };base64,${Buffer.from(data, 'base64')}`;
       doctor.picture = base64PictureUrl;
-      res.status(200).json({
-        status: 'success',
-        data: doctor,
-      });
+      responceMiddleware.sendResponse(res, 200, 'success', doctor, null, null);
     }
   );
 });
@@ -61,6 +56,5 @@ exports.updateDoctorProfile = asyncHandler(async (req, res, next) => {
     new: true,
     runValidators: true,
   });
-
-  res.status(200).json({ status: 'success', data: doctor });
+  responceMiddleware.sendResponse(res, 200, 'success', doctor, null, null);
 });
