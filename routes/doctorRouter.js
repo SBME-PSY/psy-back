@@ -3,22 +3,29 @@ const path = require('path');
 const advancedResults = require('../middleware/advancedResults');
 const fileUpload = require('../middleware/fileUpload');
 
-const authentcationController = require('../controllers/authenticationController');
-const authenticate = require('../controllers/authentication/doctorAuthentication');
+// const authentcationController = require('../controllers/authenticationController');
+const doctorAuthentication = require('../controllers/authentication/doctorAuthentication');
 const doctorController = require('../controllers/doctorController');
 
 const router = express.Router();
 router
   .route('/')
-  .get(authentcationController.protect, doctorController.getAllDoctors);
+  .get(doctorAuthentication.protect, doctorController.getAllDoctors);
 
-router.route('/signup').post(authenticate.signUp);
-
+router.route('/signup').post(doctorAuthentication.signUp);
+router.route('/login').post(doctorAuthentication.logIn);
+router.route('/forgot-password').post(doctorAuthentication.forgotPassword);
+router
+  .route('/reset-password/:resetToken')
+  .patch(doctorAuthentication.resetPassword);
+router
+  .route('/update-password')
+  .patch(doctorAuthentication.protect, doctorAuthentication.updatePassword);
 router
   .route('/profile')
-  .get(authentcationController.protect, doctorController.getDoctorProfile)
+  .get(doctorAuthentication.protect, doctorController.getDoctorProfile)
   .patch(
-    authentcationController.protect,
+    doctorAuthentication.protect,
     fileUpload.setUploadParameters(
       'doctorPic-',
       path.resolve(__dirname, '../public/doctors/profile-picture'),

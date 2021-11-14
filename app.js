@@ -1,7 +1,7 @@
 const express = require('express');
 const morgan = require('morgan');
 const cors = require('cors');
-const authRouter = require('./routes/authRouter');
+// const authRouter = require('./routes/authRouter');
 const userRouter = require('./routes/userRouter');
 const doctorRouter = require('./routes/doctorRouter');
 const adminRouter = require('./routes/adminRouter');
@@ -16,9 +16,9 @@ if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'));
 }
 
-app.use('/psy/users', authRouter, userRouter);
+app.use('/psy/users', userRouter);
 app.use('/psy/doctors', doctorRouter);
-app.use('/psy/admins', authRouter, adminRouter);
+app.use('/psy/admins', adminRouter);
 app.use('*', (req, res, next) => {
   next(new AppError('This route is not defind ', 404));
 });
