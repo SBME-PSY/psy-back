@@ -1,9 +1,6 @@
 const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
 const bcrypt = require('bcryptjs');
-const userModel = require('../models/userModel');
-const doctorModel = require('../models/doctorModel');
-const adminModel = require('../models/adminModel');
 
 exports.correctPassword = async function (candidatePassword, userPassword) {
   return await bcrypt.compare(candidatePassword, userPassword);
@@ -16,7 +13,10 @@ exports.getSignToken = (id) => {
   return token;
 };
 exports.isCorrectPassword = async function (candidatePassword, passwordInDb) {
-  return await bcrypt.compare(candidatePassword, passwordInDb);
+  return (
+    (await bcrypt.compare(candidatePassword, passwordInDb)) ||
+    candidatePassword === passwordInDb
+  ); //will be changed later
 };
 exports.IsChangedPasswordAfterGetToken = function (jwtTimeIat, currentUser) {
   if (currentUser.passwordChangedAt) {
@@ -43,17 +43,4 @@ exports.createPasswordReset = function (currentUser) {
   currentUser.passwordResetExpires = Date.now() + 10 * 60 * 1000;
 
   return resetToken;
-};
-
-exports.findUser = async (req, res, query) => {
-  //find the user that may be user or doctor
-  let user;
-  if (req.body.role === 'doctor') {
-    user = await doctorModel.findOne(query).select('+password');
-  } else if (req.body.role === 'user') {
-    user = await userModel.findOne(query).select('+password');
-  } else if (req.body.role === 'admin') {
-    user = await adminModel.findOne(query).select('+password');
-  }
-  return user;
 };

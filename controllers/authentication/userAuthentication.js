@@ -1,59 +1,54 @@
 const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
 
-const userModel = require('../models/userModel');
-const doctorModel = require('../models/doctorModel');
-const AppError = require('../utils/appError');
-const asyncHandler = require('../middleware/asyncHandler');
-const sendEmail = require('../utils/sendEmail');
-const authFun = require('../utils/authFun');
+const userModel = require('../../models/userModel');
+const AppError = require('../../utils/appError');
+const asyncHandler = require('../../middleware/asyncHandler');
+const authFun = require('../../utils/authFun');
+const userValidators = require('../../validators/userValidators/userSignupValidations');
+const getQuery = require('../../middleware/getQuery');
+const responceMiddleware = require('../../middleware/responceMiddleware');
+const sendEmail = require('../../utils/sendEmail');
 
 exports.signUp = asyncHandler(async (req, res, next) => {
-  let newUser;
+  const { error, value } = userValidators.userSignupValidationScheme.validate(
+    req.body
+  );
 
-  if (req.body.role === 'doctor') {
-    if (req.file) req.body.cv = req.file.filename;
-    newUser = await doctorModel.create(req.body);
-  } else if (req.body.role === 'user') {
-    newUser = await userModel.create(req.body);
+  if (error) {
+    return next(new AppError(error, 400));
   }
+
+  const newUser = await userModel.create(value);
+
   const token = authFun.getSignToken(newUser._id);
-  res.status(201).json({
-    status: 'success',
-    token: token,
-    data: newUser,
-  });
+  responceMiddleware.sendResponse(res, 201, 'success', newUser, token, null);
 });
 
 exports.logIn = asyncHandler(async (req, res, next) => {
-  const isEmail = req.body.email.match(/^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$/);
-  const emialOrPhone = isEmail ? 'email' : 'phone';
-  const emialOrPhoneValue = req.body.email;
-  const { password } = req.body;
-  //1)check if the uer didint enter email or password
-  if (!emialOrPhoneValue || !password) {
-    return next(
-      new AppError('Please enter either email or phone and password'),
-      400
-    );
+  const { error, value } = userValidators.userLoginValidationScheme.validate(
+    req.body
+  );
+  if (error) {
+    return next(new AppError(error, 400));
   }
+  //get search query
+  const query = getQuery.getSearchObject(value); // {email:"+20100514723 or email:"xx@mail.com" , password:"1236344ss"}
 
-  const query = { [emialOrPhone]: emialOrPhoneValue };
-  //1)get the user or doctor
-  const user = await authFun.findUser(req, res, query); //find user that may be userofapp or doctor
+  //1)get the doctor
+  const user = await userModel.findOne(query).select('+password');
   //2)check if there is no user or check if the password is not correct
-  if (!user || !(await authFun.isCorrectPassword(password, user.password))) {
+  if (
+    !user ||
+    !(await authFun.isCorrectPassword(value.password, user.password))
+  ) {
     return next(
       new AppError('Email and password compination is not correct'),
       401
     );
   }
   const token = authFun.getSignToken(user._id);
-  res.status(201).json({
-    status: 'success',
-    token: token,
-    data: user,
-  });
+  responceMiddleware.sendResponse(res, 201, 'success', user, token, null);
 });
 
 exports.protect = asyncHandler(async (req, res, next) => {
@@ -66,14 +61,12 @@ exports.protect = asyncHandler(async (req, res, next) => {
     token = req.headers.authorization.split(' ')[1];
   }
   if (!token) {
-    next(new AppError('you never sign Up Sign Up first'));
+    next(new AppError('you never sign Up , Sign Up first'));
   }
   // 2) Verification token check if the token is vaaild
   const decodedPyload = await jwt.verify(token, process.env.JWT_SECRET);
   // 3) Check if user still exists
-  const currentUser =
-    (await userModel.findById(decodedPyload.id)) ||
-    (await doctorModel.findById(decodedPyload.id));
+  const currentUser = await userModel.findById(decodedPyload.id);
 
   if (!currentUser)
     next(
@@ -91,13 +84,13 @@ exports.protect = asyncHandler(async (req, res, next) => {
   req.user = currentUser;
   next();
 });
-
 exports.forgotPassword = asyncHandler(async (req, res, next) => {
   //1)get the user or doctor
   const query = { email: req.body.email };
-  const currentUser = await authFun.findUser(req, res, query);
+  const currentUser = await userModel.findOne(query).select('+password');
+
   if (!currentUser) {
-    return next(new AppError('no user or doctor with this email'));
+    return next(new AppError('no user with this email'));
   }
   // 2) Generate the random reset token and save it avraiable in db
   const userResetPassword = await authFun.createPasswordReset(currentUser);
@@ -106,7 +99,7 @@ exports.forgotPassword = asyncHandler(async (req, res, next) => {
   // 3) Send it to user's email
   const resetURL = `${req.protocol}://${req.get('host')}${
     req.baseUrl
-  }/resetPassword/${userResetPassword}`;
+  }/reset-password/${userResetPassword}`;
 
   const message = `Forgot your password? Submit a PATCH request with your 
       new password and passwordConfirm to: ${resetURL}.\nIf you didn't forget 
@@ -117,12 +110,15 @@ exports.forgotPassword = asyncHandler(async (req, res, next) => {
     subject: 'Your password reset token (valid for 10 min)',
     message,
   });
-  res.status(200).json({
-    status: 'success',
-    message: 'Token sent to email!',
-  });
+  responceMiddleware.sendResponse(
+    res,
+    200,
+    'success',
+    null,
+    null,
+    'Token sent to email!'
+  );
 });
-
 exports.resetPassword = asyncHandler(async (req, res, next) => {
   //1)get user based o the resetPasswodToken
   const hashedRestToken = crypto
@@ -133,45 +129,43 @@ exports.resetPassword = asyncHandler(async (req, res, next) => {
     passwordResetToken: hashedRestToken,
     restPasswordExpires: { $gt: Date.now() },
   };
-  const user = await authFun.findUser(req, res, query);
-  if (!user) next(new AppError('your reset token is expired'));
-  //2)if its ok reset password and give the jwt
-  user.password = req.body.password;
-  user.confirmPassword = req.body.confirmPassword;
-  user.passwordResetToken = undefined;
-  user.passwordResetExpires = undefined;
-  //we use user.save instead of user update baecause of we eed check validator
-  await user.save();
-  const token = authFun.getSignToken(user._id);
-  //3) change the update password at field
+  const currentUser = await userModel.findOne(query).select('+password');
 
-  res.status(201).json({
-    status: 'success',
-    token,
-  });
+  if (!currentUser) next(new AppError('your reset token is expired'));
+  //2)if its ok reset password and give the jwt
+  currentUser.password = req.body.password;
+  currentUser.confirmPassword = req.body.confirmPassword;
+  currentUser.passwordResetToken = undefined;
+  currentUser.passwordResetExpires = undefined;
+  //we use currentUser.save instead of currentUser update baecause of we eed check validator
+  await currentUser.save();
+  const token = authFun.getSignToken(currentUser._id);
+  //3) change the update password at field
+  responceMiddleware.sendResponse(res, 200, 'success', null, token, null); // res.status(201).json({
 });
 
 exports.updatePassword = asyncHandler(async (req, res, next) => {
   // 1) Get user from collection
   const query = { _id: req.user.id };
-  const user = await authFun.findUser(req, res, query);
+  const currentUser = await userModel.findOne(query).select('+password');
   // 2) Check if POSTed password match current password is correct
   if (
-    !(await authFun.correctPassword(req.body.currentPassword, user.password))
+    !(await authFun.correctPassword(
+      req.body.currentPassword,
+      currentUser.password
+    ))
   ) {
     return next(new AppError('Your current password is wrong.', 401));
   }
 
   // 3) If so, update password
-  user.password = req.body.newPassword;
-  user.confirmPassword = req.body.confirmNewPassword;
-  await user.save();
-  const token = authFun.getSignToken(user._id);
+  currentUser.password = req.body.newPassword;
+  currentUser.confirmPassword = req.body.confirmNewPassword;
+  await currentUser.save();
+  const token = authFun.getSignToken(currentUser._id);
 
-  // User.findByIdAndUpdate will NOT work as intended!
-  res.status(201).json({
-    status: 'success',
-    token,
-  });
-  // 4) Log user in, send JWT
+  // currentUser.findByIdAndUpdate will NOT work as intended!
+  responceMiddleware.sendResponse(res, 200, 'success', null, token, null); // res.status(201).json({
+
+  // 4) Log currentUser in, send JWT
 });
