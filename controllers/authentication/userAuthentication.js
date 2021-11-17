@@ -1,19 +1,14 @@
 const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
 
-const userModel = require('../../models/userModel');
-const AppError = require('../../utils/appError');
-const asyncHandler = require('../../middleware/asyncHandler');
-const authFun = require('../../utils/authFun');
-const userValidators = require('../../validators/userValidators/userSignupValidations');
-const getQuery = require('../../middleware/getQuery');
-const responceMiddleware = require('../../middleware/responceMiddleware');
-const sendEmail = require('../../utils/sendEmail');
+const { userModel } = require('../../models');
+const { AppError, authFun, sendEmail } = require('../../utils');
+const { userAuthValidators } = require('../../validators');
+const { asyncHandler, responseHandler, getQuery } = require('../../middleware');
 
 exports.signUp = asyncHandler(async (req, res, next) => {
-  const { error, value } = userValidators.userSignupValidationScheme.validate(
-    req.body
-  );
+  const { error, value } =
+    userAuthValidators.userSignupValidationScheme.validate(req.body);
 
   if (error) {
     return next(new AppError(error, 400));
@@ -22,13 +17,12 @@ exports.signUp = asyncHandler(async (req, res, next) => {
   const newUser = await userModel.create(value);
 
   const token = authFun.getSignToken(newUser._id);
-  responceMiddleware.sendResponse(res, 201, 'success', newUser, token, null);
+  responseHandler.sendResponse(res, 201, 'success', newUser, token, null);
 });
 
 exports.logIn = asyncHandler(async (req, res, next) => {
-  const { error, value } = userValidators.userLoginValidationScheme.validate(
-    req.body
-  );
+  const { error, value } =
+    userAuthValidators.userLoginValidationScheme.validate(req.body);
   if (error) {
     return next(new AppError(error, 400));
   }
@@ -48,7 +42,7 @@ exports.logIn = asyncHandler(async (req, res, next) => {
     );
   }
   const token = authFun.getSignToken(user._id);
-  responceMiddleware.sendResponse(res, 201, 'success', user, token, null);
+  responseHandler.sendResponse(res, 201, 'success', user, token, null);
 });
 
 exports.protect = asyncHandler(async (req, res, next) => {
@@ -110,7 +104,7 @@ exports.forgotPassword = asyncHandler(async (req, res, next) => {
     subject: 'Your password reset token (valid for 10 min)',
     message,
   });
-  responceMiddleware.sendResponse(
+  responseHandler.sendResponse(
     res,
     200,
     'success',
@@ -141,7 +135,7 @@ exports.resetPassword = asyncHandler(async (req, res, next) => {
   await currentUser.save();
   const token = authFun.getSignToken(currentUser._id);
   //3) change the update password at field
-  responceMiddleware.sendResponse(res, 200, 'success', null, token, null); // res.status(201).json({
+  responseHandler.sendResponse(res, 200, 'success', null, token, null); // res.status(201).json({
 });
 
 exports.updatePassword = asyncHandler(async (req, res, next) => {
@@ -165,7 +159,7 @@ exports.updatePassword = asyncHandler(async (req, res, next) => {
   const token = authFun.getSignToken(currentUser._id);
 
   // currentUser.findByIdAndUpdate will NOT work as intended!
-  responceMiddleware.sendResponse(res, 200, 'success', null, token, null); // res.status(201).json({
+  responseHandler.sendResponse(res, 200, 'success', null, token, null); // res.status(201).json({
 
   // 4) Log currentUser in, send JWT
 });

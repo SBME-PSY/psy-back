@@ -39,6 +39,8 @@ exports.doctorSignupValidationScheme = Joi.object({
   maritalStatus: Joi.string().valid(...maritalStatus),
   role: Joi.string().equal('doctor'),
   birthday: Joi.string().isoDate(),
+  cvFile: Joi.string(),
+  profilePicture: Joi.string(),
 });
 
 exports.doctorLoginValidationScheme = Joi.object({

@@ -1,8 +1,7 @@
-const userModel = require('../models/userModel');
-const asyncHandler = require('../middleware/asyncHandler');
-const responceMiddleware = require('../middleware/responceMiddleware');
+const { userModel } = require('../models');
+const { asyncHandler, responseHandler } = require('../middleware');
 
 exports.getAllUsers = asyncHandler(async (req, res, next) => {
   const allUsers = await userModel.find();
-  responceMiddleware.sendResponse(res, 200, 'success', allUsers, null, null);
+  responseHandler.sendResponse(res, 200, 'success', allUsers, null, null);
 });

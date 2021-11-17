@@ -1,18 +1,25 @@
 const express = require('express');
 const path = require('path');
-const advancedResults = require('../middleware/advancedResults');
-const fileUpload = require('../middleware/fileUpload');
 
-// const authentcationController = require('../controllers/authenticationController');
-const doctorAuthentication = require('../controllers/authentication/doctorAuthentication');
-const doctorController = require('../controllers/doctorController');
+const { advancedResults, fileUpload } = require('../middleware');
+const { doctorController, doctorAuthentication } = require('../controllers');
 
 const router = express.Router();
 router
   .route('/')
   .get(doctorAuthentication.protect, doctorController.getAllDoctors);
 
-router.route('/signup').post(doctorAuthentication.signUp);
+router
+  .route('/signup')
+  .post(
+    fileUpload.setUploadParametersSingle(
+      'doctorPic-',
+      path.resolve(__dirname, '../public/doctors/cvFile'),
+      'pdf'
+    ),
+    fileUpload.base64UploadSingle('cvFile'),
+    doctorAuthentication.signUp
+  );
 router.route('/login').post(doctorAuthentication.logIn);
 router.route('/forgot-password').post(doctorAuthentication.forgotPassword);
 router
@@ -26,12 +33,12 @@ router
   .get(doctorAuthentication.protect, doctorController.getDoctorProfile)
   .patch(
     doctorAuthentication.protect,
-    fileUpload.setUploadParameters(
+    fileUpload.setUploadParametersSingle(
       'doctorPic-',
       path.resolve(__dirname, '../public/doctors/profile-picture'),
       'image'
     ),
-    fileUpload.base64Upload,
+    fileUpload.base64UploadSingle('profilePicture'),
     advancedResults.filterBody(
       'name',
       'email',

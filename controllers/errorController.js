@@ -1,4 +1,4 @@
-const AppError = require('../utils/appError');
+const { AppError } = require('../utils');
 //duplicate key error
 const handleDuplicateUnique = (err) =>
   new AppError(`${JSON.stringify(err.keyValue)} Duplicate key value `, 400);

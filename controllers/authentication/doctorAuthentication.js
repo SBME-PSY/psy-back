@@ -1,18 +1,14 @@
 const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
 
-const doctorModel = require('../../models/doctorModel');
-const AppError = require('../../utils/appError');
-const asyncHandler = require('../../middleware/asyncHandler');
-const authFun = require('../../utils/authFun');
-const doctorValidators = require('../../validators/doctorValidators/doctorSignupValidations');
-const getQuery = require('../../middleware/getQuery');
-const responceMiddleware = require('../../middleware/responceMiddleware');
-const sendEmail = require('../../utils/sendEmail');
+const { doctorModel } = require('../../models');
+const { AppError, authFun, sendEmail } = require('../../utils');
+const { doctorAuthValidators } = require('../../validators');
+const { asyncHandler, responseHandler, getQuery } = require('../../middleware');
 
 exports.signUp = asyncHandler(async (req, res, next) => {
   const { error, value } =
-    doctorValidators.doctorSignupValidationScheme.validate(req.body);
+    doctorAuthValidators.doctorSignupValidationScheme.validate(req.body);
 
   if (error) {
     return next(new AppError(error, 400));
@@ -21,12 +17,12 @@ exports.signUp = asyncHandler(async (req, res, next) => {
   const newDoctor = await doctorModel.create(value);
 
   const token = authFun.getSignToken(newDoctor._id);
-  responceMiddleware.sendResponse(res, 201, 'success', newDoctor, token, null);
+  responseHandler.sendResponse(res, 201, 'success', newDoctor, token, null);
 });
 
 exports.logIn = asyncHandler(async (req, res, next) => {
   const { error, value } =
-    doctorValidators.doctorLoginValidationScheme.validate(req.body);
+    doctorAuthValidators.doctorLoginValidationScheme.validate(req.body);
   if (error) {
     return next(new AppError(error, 400));
   }
@@ -46,14 +42,7 @@ exports.logIn = asyncHandler(async (req, res, next) => {
     );
   }
   const token = authFun.getSignToken(currentDoctor._id);
-  responceMiddleware.sendResponse(
-    res,
-    201,
-    'success',
-    currentDoctor,
-    token,
-    null
-  );
+  responseHandler.sendResponse(res, 201, 'success', currentDoctor, token, null);
 });
 
 exports.protect = asyncHandler(async (req, res, next) => {
@@ -118,7 +107,7 @@ exports.forgotPassword = asyncHandler(async (req, res, next) => {
     subject: 'Your password reset token (valid for 10 min)',
     message,
   });
-  responceMiddleware.sendResponse(
+  responseHandler.sendResponse(
     res,
     200,
     'success',
@@ -149,7 +138,7 @@ exports.resetPassword = asyncHandler(async (req, res, next) => {
   await currentDoctor.save();
   const token = authFun.getSignToken(currentDoctor._id);
   //3) change the update password at field
-  responceMiddleware.sendResponse(res, 200, 'success', null, token, null); // res.status(201).json({
+  responseHandler.sendResponse(res, 200, 'success', null, token, null); // res.status(201).json({
 });
 
 exports.updatePassword = asyncHandler(async (req, res, next) => {
@@ -173,7 +162,7 @@ exports.updatePassword = asyncHandler(async (req, res, next) => {
   const token = authFun.getSignToken(currentDoctor._id);
 
   // currentDoctor.findByIdAndUpdate will NOT work as intended!
-  responceMiddleware.sendResponse(res, 200, 'success', null, token, null); // res.status(201).json({
+  responseHandler.sendResponse(res, 200, 'success', null, token, null); // res.status(201).json({
 
   // 4) Log currentDoctor in, send JWT
 });

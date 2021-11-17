@@ -1,15 +1,11 @@
-const adminModel = require('../../models/adminModel');
-const AppError = require('../../utils/appError');
-const asyncHandler = require('../../middleware/asyncHandler');
-const authFun = require('../../utils/authFun');
-const adminValidators = require('../../validators/adminValidators/adminSignupValidations');
-const getQuery = require('../../middleware/getQuery');
-const responceMiddleware = require('../../middleware/responceMiddleware');
+const { adminModel } = require('../../models');
+const { AppError, authFun } = require('../../utils');
+const { adminAuthValidators } = require('../../validators');
+const { asyncHandler, responseHandler, getQuery } = require('../../middleware');
 
 exports.logIn = asyncHandler(async (req, res, next) => {
-  const { error, value } = adminValidators.adminLoginValidationScheme.validate(
-    req.body
-  );
+  const { error, value } =
+    adminAuthValidators.adminLoginValidationScheme.validate(req.body);
   if (error) {
     return next(new AppError(error, 400));
   }
@@ -30,12 +26,5 @@ exports.logIn = asyncHandler(async (req, res, next) => {
     );
   }
   const token = authFun.getSignToken(currentAdmin._id);
-  responceMiddleware.sendResponse(
-    res,
-    201,
-    'success',
-    currentAdmin,
-    token,
-    null
-  );
+  responseHandler.sendResponse(res, 201, 'success', currentAdmin, token, null);
 });
