@@ -22,28 +22,30 @@ const userSchema = new mongoose.Schema({
     minlength: 6,
     select: false,
   },
-  confirmPassword: {
-    type: String,
-    validate: {
-      // this work only on .Save or create not work  in update
-      validator: function (val) {
-        return this.password === val;
-      },
-      message: 'the password should be the same as confirmPassword',
-    },
-    required: [true, 'confirmpasswrd is require'],
-  },
   phone: {
     type: String,
-    maxLength: [11, 'the phone nuber is too long'],
+    maxLength: [13, 'the phone nuber is too long'],
     minLength: [11, 'the phone nuber is too short'],
-    match: [/^01[0-2]\d{1,8}$/, 'Please add a valid phone number'],
+    match: [/^(\+2)?01[0-25]\d{8}$/, 'Please add a valid phone number'],
     required: [true, 'a phone number is required'],
     unique: true,
   },
-  resetPasswordToken: String,
-  resetPasswordExpire: Date,
+  sex: {
+    type: String,
+    enum: ['male', 'female'],
+  },
+  maritalStatus: {
+    type: String,
+    enum: ['Single', 'Married', 'Divorced', 'Seperated', 'Engaged', 'Widowed'],
+  },
+  birthday: {
+    type: Date,
+  },
   createdAt: {
+    type: Date,
+    default: Date.now,
+  },
+  updatedAt: {
     type: Date,
     default: Date.now,
   },
@@ -56,7 +58,11 @@ const userSchema = new mongoose.Schema({
 //hash the password
 userSchema.pre('save', preSave.cryptPassword);
 userSchema.pre('save', preSave.setTimePasswordChangedAt);
+userSchema.pre('save', function (next) {
+  this.updatedAt = Date.now();
+  next();
+});
 
-const userModel = mongoose.model('userModel', userSchema);
+const userModel = mongoose.model('User', userSchema);
 
 module.exports = userModel;
