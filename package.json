@@ -9,7 +9,8 @@
     "prepare": "husky install",
     "prod": "NODE_ENV=production node server.js",
     "debug": "ndb server.js",
-    "test": "mocha --require test/mocha.env.js test/**/*.test.js --timeout 10000"
+    "test": "mocha --require test/mocha.env.js test/**/*.test.js --timeout 10000 --exit",
+    "test-with-coverage": "nyc --reporter=text mocha --require test/mocha.env.js test/**/*.test.js --timeout 10000 --exit"
   },
   "repository": {
     "type": "git",
@@ -50,7 +51,7 @@
     "eslint": "^7.32.0",
     "eslint-config-airbnb": "^18.2.1",
     "eslint-config-prettier": "^8.3.0",
-    "eslint-plugin-import": "^2.24.2",
+    "eslint-plugin-import": "^2.25.2",
     "eslint-plugin-jsx-a11y": "^6.4.1",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-prettier": "^4.0.0",
@@ -59,6 +60,7 @@
     "lint-staged": "^11.2.3",
     "mocha": "^9.1.3",
     "nodemon": "^2.0.13",
+    "nyc": "^15.1.0",
     "prettier": "^2.4.1"
   },
   "lint-staged": {

@@ -53,6 +53,7 @@ const errorHandeler = (err, req, res, next) => {
     if (err.code === 'LIMIT_FILE_SIZE') error = handelFileSizeErr(error);
     sendProdError(error, req, res, next);
   } else if (process.env.NODE_ENV === 'development') {
+    console.log(err.statusCode, err.status, err.message);
     sendDevError(err, res);
   }
 };
