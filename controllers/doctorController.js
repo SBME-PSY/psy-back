@@ -1,4 +1,3 @@
-const crypto = require('crypto');
 const path = require('path');
 const fs = require('fs');
 
@@ -41,13 +40,11 @@ exports.updateDoctorProfile = asyncHandler(async (req, res, next) => {
   if (req.body.name && !req.file) {
     const temp = await doctorModel.findById(req.user.id).select('picture');
     console.log(temp);
-    const uri = 'https://avatars.dicebear.com/api/initials/';
+    const uri =
+      'https://ui-avatars.com/api/?rounded=true&background=fff&size=512&name=';
     if (temp.picture.startsWith(uri)) {
-      const initials = req.body.name
-        .split(' ')
-        .reduce((init, str) => init + str[0], '');
-      const seed = crypto.randomBytes(5).toString('hex');
-      const picURL = `${uri + initials + seed}.svg?size=50&radius=50`;
+      const initials = req.body.name.split(' ').join('+');
+      const picURL = `${uri + initials}.png`;
       req.body.picture = picURL;
     }
   }
