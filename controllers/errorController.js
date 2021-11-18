@@ -1,4 +1,4 @@
-const AppError = require('../utils/appError');
+const { AppError } = require('../utils');
 //duplicate key error
 const handleDuplicateUnique = (err) =>
   new AppError(`${JSON.stringify(err.keyValue)} Duplicate key value `, 400);
@@ -9,13 +9,11 @@ const handleValidatorError = (err) => {
   return new AppError(message, 400);
 };
 // jwt token is not valid error
-const handelJwtTokenErr = () =>
-  new AppError('the token is invalid please sign up', 401);
+const handelJwtTokenErr = () => new AppError('Invalid Token', 401);
 // jwt token is expire error
-const handelJwtExpireErr = () =>
-  new AppError('access token is  expired please sign in again  ', 401);
+const handelJwtExpireErr = () => new AppError('Access token has expired', 401);
 const handelFileSizeErr = () =>
-  new AppError('please Upload file less than 1 mega', 500);
+  new AppError('File is too large, max file size is 1 Megabyte', 413);
 
 //Production Errors
 const sendProdError = (err, req, res, next) => {
@@ -44,6 +42,7 @@ const sendDevError = (err, res) => {
 const errorHandeler = (err, req, res, next) => {
   err.statusCode = err.statusCode || 500; //if it is not opertional it will be 500
   err.status = err.status || 'fail'; //if it is not opertional it will be 500
+  console.log(err);
   if (process.env.NODE_ENV === 'production') {
     // eslint-disable-next-line node/no-unsupported-features/es-syntax
     let error = { ...err };

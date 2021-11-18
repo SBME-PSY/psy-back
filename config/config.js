@@ -1,0 +1,11 @@
+MONGO_URL_DEV=mongoDevDatabaseURL:string
+MONGO_URL_TEST=mongoTestDatabaseURL:string
+PASSWORD=MongoPassword:string
+PORT=ApplicationPort:number
+NODE_ENV=development||test||production:string
+JWT_SECRET=secret:string
+JWT_EXPIRES_IN=time:string (30d for example)
+EMAIL_HOST=MailingService:string
+EMAIL_PORT=MailingServicePort:number
+EMAIL_USER_NAME=MailingServiceUser:string
+EMAIL_PASSWORD=MailingServicePassword:string
