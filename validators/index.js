@@ -1,3 +1,6 @@
-exports.adminAuthValidators = require('./adminValidators/adminSignupValidations');
+exports.adminAuthValidators = require('./adminValidators').adminAuthValidators;
+exports.adminValidators = require('./adminValidators').adminValidators;
+
 exports.doctorAuthValidators = require('./doctorValidators/doctorSignupValidations');
+
 exports.userAuthValidators = require('./userValidators/userSignupValidations');

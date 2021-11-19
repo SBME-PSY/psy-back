@@ -13,7 +13,7 @@ router
   .route('/signup')
   .post(
     fileUpload.setUploadParametersSingle(
-      'doctorPic-',
+      'doctorCV-',
       path.resolve(__dirname, '../public/doctors/cvFile'),
       'pdf'
     ),

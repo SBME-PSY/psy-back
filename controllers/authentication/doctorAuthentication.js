@@ -14,6 +14,10 @@ exports.signUp = asyncHandler(async (req, res, next) => {
     return next(new AppError(error, 400));
   }
 
+  if (req.file) value.cv = `${req.file.path}/${req.file.filename}`;
+
+  delete value.cvFile;
+
   const newDoctor = await doctorModel.create(value);
 
   const token = authFun.getSignToken(newDoctor._id);
