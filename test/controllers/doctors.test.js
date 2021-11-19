@@ -96,7 +96,6 @@ describe('Doctor Controller', () => {
       confirmPassword: '123456789ss',
       role: doctor.role,
     };
-    console.log(`/psy/doctors/reset-password/${userResetPassword}`);
     chai
       .request(server)
       .patch(`/psy/doctors/reset-password/${userResetPassword}`)

@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-const crypto = require('crypto');
 const preSave = require('../utils/preSave');
 
 const doctorSchema = new mongoose.Schema(
@@ -44,7 +43,7 @@ const doctorSchema = new mongoose.Schema(
     },
     cv: {
       type: String,
-      // required: [true, 'please enter your cv'],
+      required: [true, 'please enter your cv'],
     },
     picture: {
       type: String,
@@ -74,12 +73,10 @@ doctorSchema.pre('save', preSave.cryptPassword);
 doctorSchema.pre('save', preSave.setTimePasswordChangedAt);
 doctorSchema.pre('save', function () {
   if (!this.picture) {
-    const uri = 'https://avatars.dicebear.com/api/initials/';
-    const initials = this.name
-      .split(' ')
-      .reduce((init, str) => init + str[0], '');
-    const seed = crypto.randomBytes(5).toString('hex');
-    const picURL = `${uri + initials + seed}.svg?size=50&radius=50`;
+    const uri =
+      'https://ui-avatars.com/api/?rounded=true&background=fff&size=512&name=';
+    const initials = this.name.split(' ').join('+');
+    const picURL = `${uri + initials}.png`;
     this.picture = picURL;
   }
 });
