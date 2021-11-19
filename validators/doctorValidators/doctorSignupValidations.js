@@ -41,6 +41,7 @@ exports.doctorSignupValidationScheme = Joi.object({
   birthday: Joi.string().isoDate(),
   cvFile: Joi.string(),
   profilePicture: Joi.string(),
+  governorate: Joi.string().required(),
 });
 
 exports.doctorLoginValidationScheme = Joi.object({

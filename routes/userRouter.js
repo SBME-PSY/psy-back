@@ -14,4 +14,5 @@ router
 router
   .route('/update-password')
   .patch(userAuthentication.protect, userAuthentication.updatePassword);
+// router.route('/find-doctor').get(userController.FindDoctor);
 module.exports = router;
