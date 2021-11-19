@@ -6,14 +6,14 @@ exports.getAllPendingApp = asyncHandler(async (req, res, next) => {
   const appLength = pedingApp.length;
   res.status(200).json({
     status: 'success',
-    appLength,
-    pedingApp,
+    count: appLength,
+    data: pedingApp,
   });
 });
-exports.rejectApp = asyncHandler(async (req, res, next) => {
+exports.ApplicationResponse = asyncHandler(async (req, res, next) => {
   const doctor = await doctorModel.findByIdAndUpdate(
     req.params.id,
-    { status: 'refused' },
+    { status: req.body.status },
     {
       new: true,
       runValidators: true,
@@ -21,20 +21,6 @@ exports.rejectApp = asyncHandler(async (req, res, next) => {
   );
   res.status(200).json({
     status: 'success',
-    doctor,
-  });
-});
-exports.approveApp = asyncHandler(async (req, res, next) => {
-  const doctor = await doctorModel.findByIdAndUpdate(
-    req.params.id,
-    { status: 'approved' },
-    {
-      new: true,
-      runValidators: true,
-    }
-  );
-  res.status(200).json({
-    status: 'success',
-    doctor,
+    data: doctor,
   });
 });

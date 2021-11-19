@@ -60,7 +60,7 @@ const doctorSchema = new mongoose.Schema({
   },
   cv: {
     type: String,
-    required: [true, 'please enter your cv'],
+    //required: [true, 'please enter your cv'],
   },
   picture: {
     type: String,
