@@ -1,7 +1,6 @@
 const nodemailer = require('nodemailer');
 
 const sendEmail = async (options) => {
-  console.log('waiting in email.js 1');
   // 1) Create a transporter
   const transporter = nodemailer.createTransport({
     host: process.env.EMAIL_HOST,
@@ -12,8 +11,6 @@ const sendEmail = async (options) => {
     },
   });
   // 2) Define the email options
-  console.log('waiting in email.js 1');
-
   const mailOptions = {
     from: 'Jonas Schmedann <hello@jonas.io>',
     to: options.email,
@@ -21,8 +18,6 @@ const sendEmail = async (options) => {
     text: options.message,
     // html:
   };
-  console.log('waiting in email.js 1');
-
   // 3) Actually send the email
   await transporter.sendMail(mailOptions);
 };
