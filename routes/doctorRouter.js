@@ -1,22 +1,53 @@
 const express = require('express');
-const advancedResults = require('../middleware/advancedResults');
-const fileUpload = require('../middleware/fileUpload');
+const path = require('path');
 
-const authentcationController = require('../controllers/authenticationController');
-const doctorController = require('../controllers/doctorController');
+const { advancedResults, fileUpload } = require('../middleware');
+const { doctorController, doctorAuthentication } = require('../controllers');
 
 const router = express.Router();
 router
   .route('/')
-  .get(authentcationController.protect, doctorController.getAllDoctors);
+  .get(doctorAuthentication.protect, doctorController.getAllDoctors);
 
 router
+  .route('/signup')
+  .post(
+    fileUpload.setUploadParametersSingle(
+      'doctorCV-',
+      path.resolve(__dirname, '../public/doctors/cvFile'),
+      'pdf'
+    ),
+    fileUpload.base64UploadSingle('cvFile'),
+    doctorAuthentication.signUp
+  );
+router.route('/login').post(doctorAuthentication.logIn);
+router.route('/forgot-password').post(doctorAuthentication.forgotPassword);
+router
+  .route('/reset-password/:resetToken')
+  .patch(doctorAuthentication.resetPassword);
+router
+  .route('/update-password')
+  .patch(doctorAuthentication.protect, doctorAuthentication.updatePassword);
+router
   .route('/profile')
-  .get(authentcationController.protect, doctorController.getDoctorProfile)
+  .get(doctorAuthentication.protect, doctorController.getDoctorProfile)
   .patch(
-    authentcationController.protect,
-    fileUpload.profilePicture,
-    advancedResults.filterBody('name', 'email', 'phone'),
+    doctorAuthentication.protect,
+    fileUpload.setUploadParametersSingle(
+      'doctorPic-',
+      path.resolve(__dirname, '../public/doctors/profile-picture'),
+      'image'
+    ),
+    fileUpload.base64UploadSingle('profilePicture'),
+    advancedResults.filterBody(
+      'name',
+      'email',
+      'phone',
+      'sex',
+      'maritalStatus',
+      'picture',
+      'address'
+    ),
     doctorController.updateDoctorProfile
   );
 module.exports = router;

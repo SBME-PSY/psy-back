@@ -1,26 +1,25 @@
-const asyncHandler = require('../middleware/asyncHandler');
-const doctorModel = require('../models/doctorModel');
+const { asyncHandler } = require('../middleware');
+const { doctorModel } = require('../models');
+const { AppError } = require('../utils');
+const { responseHandler } = require('../middleware');
+const { adminValidators } = require('../validators');
 
 exports.getAllPendingApp = asyncHandler(async (req, res, next) => {
   const pedingApp = await doctorModel.find({ status: 'pending' });
-  const appLength = pedingApp.length;
-  res.status(200).json({
-    status: 'success',
-    count: appLength,
-    data: pedingApp,
-  });
+
+  responseHandler.sendResponse(res, 200, 'success', pedingApp, null, null);
 });
-exports.ApplicationResponse = asyncHandler(async (req, res, next) => {
-  const doctor = await doctorModel.findByIdAndUpdate(
-    req.params.id,
-    { status: req.body.status },
-    {
-      new: true,
-      runValidators: true,
-    }
-  );
-  res.status(200).json({
-    status: 'success',
-    data: doctor,
+
+exports.applicationResponse = asyncHandler(async (req, res, next) => {
+  const { error, value } =
+    adminValidators.adminApproveApplicationSchema.validate(req.body);
+
+  if (error) {
+    return next(new AppError(error, 400));
+  }
+  const doctor = await doctorModel.findByIdAndUpdate(req.params.id, value, {
+    new: true,
+    runValidators: true,
   });
+  responseHandler.sendResponse(res, 200, 'success', doctor, null, null);
 });

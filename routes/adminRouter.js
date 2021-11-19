@@ -1,11 +1,9 @@
 const express = require('express');
-
-const authentcationController = require('../controllers/authenticationController');
-const adminController = require('../controllers/adminController');
+const { adminController, adminAuthentication } = require('../controllers');
 
 const router = express.Router();
-router.route('/logIn').post(authentcationController.logIn);
+router.route('/login').post(adminAuthentication.logIn);
 router.route('/pending-app').get(adminController.getAllPendingApp);
-router.route('/App-response/:id').patch(adminController.ApplicationResponse);
+router.route('/app-response/:id').patch(adminController.applicationResponse);
 
 module.exports = router;
