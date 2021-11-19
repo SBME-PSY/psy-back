@@ -1,7 +1,12 @@
 const express = require('express');
 const morgan = require('morgan');
 const cors = require('cors');
-const { userRoutes, adminRoutes, doctorRoutes } = require('./routes');
+const {
+  articleRoutes,
+  userRoutes,
+  adminRoutes,
+  doctorRoutes,
+} = require('./routes');
 const { AppError } = require('./utils');
 const { errorController } = require('./controllers'); //in progress
 
@@ -18,6 +23,7 @@ if (process.env.NODE_ENV === 'development') {
 app.use('/psy/users', userRoutes);
 app.use('/psy/doctors', doctorRoutes);
 app.use('/psy/admins', adminRoutes);
+app.use('/psy/articles', articleRoutes);
 app.use('*', (req, res, next) => {
   next(new AppError('Page Not Found ', 404));
 });

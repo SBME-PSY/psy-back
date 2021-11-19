@@ -39,7 +39,7 @@ exports.updateDoctorProfile = asyncHandler(async (req, res, next) => {
 
   if (req.body.name && !req.file) {
     const temp = await doctorModel.findById(req.user.id).select('picture');
-    
+
     const uri =
       'https://ui-avatars.com/api/?rounded=true&background=fff&size=512&name=';
     if (temp.picture.startsWith(uri)) {

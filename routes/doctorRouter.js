@@ -3,11 +3,10 @@ const path = require('path');
 
 const { advancedResults, fileUpload } = require('../middleware');
 const { doctorController, doctorAuthentication } = require('../controllers');
+const { authFun } = require('../utils');
 
 const router = express.Router();
-router
-  .route('/')
-  .get(doctorAuthentication.protect, doctorController.getAllDoctors);
+router.route('/').get(authFun.protect, doctorController.getAllDoctors);
 
 router
   .route('/signup')
@@ -27,12 +26,12 @@ router
   .patch(doctorAuthentication.resetPassword);
 router
   .route('/update-password')
-  .patch(doctorAuthentication.protect, doctorAuthentication.updatePassword);
+  .patch(authFun.protect, doctorAuthentication.updatePassword);
 router
   .route('/profile')
-  .get(doctorAuthentication.protect, doctorController.getDoctorProfile)
+  .get(authFun.protect, doctorController.getDoctorProfile)
   .patch(
-    doctorAuthentication.protect,
+    authFun.protect,
     fileUpload.setUploadParametersSingle(
       'doctorPic-',
       path.resolve(__dirname, '../public/doctors/profile-picture'),
