@@ -66,7 +66,6 @@ exports.protect = asyncHandler(async (req, res, next) => {
     (await doctorModel.findById(decodedPyload.id)) ||
     (await userModel.findById(decodedPyload.id)) ||
     (await adminModel.findById(decodedPyload.id));
-  console.log('******', currentUser);
   if (!currentUser)
     next(
       new AppError(
