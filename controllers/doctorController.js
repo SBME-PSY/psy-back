@@ -1,13 +1,26 @@
 const path = require('path');
 const fs = require('fs');
+const APIFeatures = require('../utils/apiFeatures');
 
 const { doctorModel } = require('../models');
 const { AppError } = require('../utils');
 const { asyncHandler, responseHandler } = require('../middleware');
 
+// exports.getAllDoctors = asyncHandler(async (req, res, next) => {
+//   const allDoctors = await doctorModel.find();
+//   responseHandler.sendResponse(res, 200, 'success', allDoctors, null, null);
+// });
+
 exports.getAllDoctors = asyncHandler(async (req, res, next) => {
-  const allDoctors = await doctorModel.find();
-  responseHandler.sendResponse(res, 200, 'success', allDoctors, null, null);
+  const features = new APIFeatures(doctorModel.find(), req.query)
+    .filter()
+    .sort()
+    .limitFields()
+    .paginate();
+  const doctors = await features.query;
+
+  // SEND RESPONSE
+  responseHandler.sendResponse(res, 200, 'sucess', doctors, null, null);
 });
 
 exports.getDoctorProfile = asyncHandler(async (req, res, next) => {
@@ -39,7 +52,7 @@ exports.updateDoctorProfile = asyncHandler(async (req, res, next) => {
 
   if (req.body.name && !req.file) {
     const temp = await doctorModel.findById(req.user.id).select('picture');
-    
+
     const uri =
       'https://ui-avatars.com/api/?rounded=true&background=fff&size=512&name=';
     if (temp.picture.startsWith(uri)) {

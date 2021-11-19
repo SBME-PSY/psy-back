@@ -1,4 +1,3 @@
-const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
 
 const { doctorModel } = require('../../models');
@@ -32,10 +31,10 @@ exports.logIn = asyncHandler(async (req, res, next) => {
   }
   //get search query
   const query = getQuery.getSearchObject(value); // {email:"+20100514723 or email:"xx@mail.com" , password:"1236344ss"}
-
   //1)get the doctor
   const currentDoctor = await doctorModel.findOne(query).select('+password');
   //2)check if there is no currentDoctor or check if the password is not correct
+
   if (
     !currentDoctor ||
     !(await authFun.isCorrectPassword(value.password, currentDoctor.password))
@@ -49,42 +48,6 @@ exports.logIn = asyncHandler(async (req, res, next) => {
   responseHandler.sendResponse(res, 201, 'success', currentDoctor, token, null);
 });
 
-exports.protect = asyncHandler(async (req, res, next) => {
-  // 1) Getting token and check of it's there
-  let token;
-  if (
-    req.headers.authorization &&
-    req.headers.authorization.startsWith('Bearer')
-  ) {
-    token = req.headers.authorization.split(' ')[1];
-  }
-  if (!token) {
-    next(new AppError('you never sign Up , Sign Up first'));
-  }
-  // 2) Verification token check if the token is vaaild
-  const decodedPyload = await jwt.verify(token, process.env.JWT_SECRET);
-  // 3) Check if user still exists
-  const currentDoctor = await doctorModel.findById(decodedPyload.id);
-
-  if (!currentDoctor)
-    next(
-      new AppError(
-        'The user belonging to this token does no longer exist please sign in first ',
-        401
-      )
-    );
-  // 4) Check if user change his password
-  if (
-    await authFun.IsChangedPasswordAfterGetToken(
-      decodedPyload.iat,
-      currentDoctor
-    )
-  ) {
-    return next(new AppError('You tried to login with old password', 401));
-  }
-  req.user = currentDoctor;
-  next();
-});
 exports.forgotPassword = asyncHandler(async (req, res, next) => {
   //1)get the user or doctor
   const query = { email: req.body.email };

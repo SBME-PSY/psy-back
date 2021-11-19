@@ -5,6 +5,3 @@ exports.getAllUsers = asyncHandler(async (req, res, next) => {
   const allUsers = await userModel.find();
   responseHandler.sendResponse(res, 200, 'success', allUsers, null, null);
 });
-// exports.FindDoctor = asyncHandler(async(req,res,next) => {
-
-// })
