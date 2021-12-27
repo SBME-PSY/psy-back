@@ -5,7 +5,7 @@ const { advancedResults, fileUpload, authorize } = require('../middleware');
 const { doctorController, doctorAuthentication } = require('../controllers');
 const { authFun } = require('../utils');
 
-const router = express.Router();
+const router = express.Router({ mergeParams: true });
 router
   .route('/')
   .get(

@@ -6,7 +6,6 @@ const doctorRouter = require('./doctorRouter');
 
 const router = express.Router();
 router.use('/find-doctor', doctorRouter);
-// router.route('/find-doctor').get(userController.FindDoctor);
 router.route('/').get(authFun.protect, userController.getAllUsers);
 
 router.route('/signup').post(userAuthentication.signUp);
