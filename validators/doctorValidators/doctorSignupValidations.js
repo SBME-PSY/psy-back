@@ -15,7 +15,6 @@ const sex = ['Male', 'Female'];
 exports.doctorSignupValidationScheme = Joi.object({
   name: Joi.string().required(),
   email: Joi.string()
-    .email()
     .error(() => new AppError('Please enter a valid email address', 400))
     .normalize()
     .lowercase()
@@ -46,7 +45,6 @@ exports.doctorSignupValidationScheme = Joi.object({
 
 exports.doctorLoginValidationScheme = Joi.object({
   email: Joi.string()
-    .email()
     .error(() => new AppError('Please enter a valid email address', 400))
     .normalize()
     .lowercase()

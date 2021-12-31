@@ -17,7 +17,7 @@ const articleSchema = new mongoose.Schema({
   },
   author: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'doctorModel',
+    ref: 'Doctor',
   },
   date: {
     type: Date,
@@ -25,6 +25,6 @@ const articleSchema = new mongoose.Schema({
   },
 });
 
-const articleModel = mongoose.model('article', articleSchema);
+const articleModel = mongoose.model('Article', articleSchema);
 
 module.exports = articleModel;

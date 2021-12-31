@@ -1,7 +1,7 @@
 exports.getSearchObject = (reqBody) => {
   const isEmail = reqBody.email.match(
     // eslint-disable-next-line no-useless-escape
-    /^\w+[\w-\.]*\@\w+((-\w+)|(\w*))\.[a-z]{2,3}$/
+    /^\w+([.-]?\w+)@\w+([.-]?\w+)(.\w{2,3})+$/
   );
   const emialOrPhone = isEmail ? 'email' : 'phone';
   const emialOrPhoneValue = reqBody.email;

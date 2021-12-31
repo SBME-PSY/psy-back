@@ -1,8 +1,7 @@
 const { asyncHandler, responseHandler } = require('../middleware');
 const { articleModel } = require('../models');
 const { articleValidators } = require('../validators');
-const { AppError } = require('../utils');
-const APIFeatures = require('../utils/apiFeatures');
+const { AppError, APIFeatures } = require('../utils');
 
 exports.createArticle = asyncHandler(async (req, res, next) => {
   const { error, value } = articleValidators.articleSchemaValidator.validate(

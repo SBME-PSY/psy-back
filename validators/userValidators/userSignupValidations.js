@@ -13,7 +13,7 @@ const sex = ['Male', 'Female'];
 
 exports.userSignupValidationScheme = Joi.object({
   name: Joi.string().required(),
-  email: Joi.string().email().normalize().lowercase().required(),
+  email: Joi.string().normalize().lowercase().required(),
   password: Joi.string().required(),
   confirmPassword: Joi.ref('password'),
   phone: Joi.string(),
@@ -25,7 +25,7 @@ exports.userSignupValidationScheme = Joi.object({
 });
 
 exports.userLoginValidationScheme = Joi.object({
-  email: Joi.string().email().normalize().lowercase().required(),
+  email: Joi.string().normalize().lowercase().required(),
   password: Joi.string().required(),
   role: Joi.string().equal('user'),
 });
