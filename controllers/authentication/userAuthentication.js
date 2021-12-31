@@ -45,39 +45,6 @@ exports.logIn = asyncHandler(async (req, res, next) => {
   responseHandler.sendResponse(res, 201, 'success', user, token, null);
 });
 
-exports.protect = asyncHandler(async (req, res, next) => {
-  // 1) Getting token and check of it's there
-  let token;
-  if (
-    req.headers.authorization &&
-    req.headers.authorization.startsWith('Bearer')
-  ) {
-    token = req.headers.authorization.split(' ')[1];
-  }
-  if (!token) {
-    next(new AppError('you never sign Up , Sign Up first'));
-  }
-  // 2) Verification token check if the token is vaaild
-  const decodedPyload = await jwt.verify(token, process.env.JWT_SECRET);
-  // 3) Check if user still exists
-  const currentUser = await userModel.findById(decodedPyload.id);
-
-  if (!currentUser)
-    next(
-      new AppError(
-        'The user belonging to this token does no longer exist please sign in first ',
-        401
-      )
-    );
-  // 4) Check if user change his password
-  if (
-    await authFun.IsChangedPasswordAfterGetToken(decodedPyload.iat, currentUser)
-  ) {
-    return next(new AppError('You tried to login with old password', 401));
-  }
-  req.user = currentUser;
-  next();
-});
 exports.forgotPassword = asyncHandler(async (req, res, next) => {
   //1)get the user or doctor
   const query = { email: req.body.email };

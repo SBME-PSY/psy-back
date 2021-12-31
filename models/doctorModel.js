@@ -52,6 +52,45 @@ const doctorSchema = new mongoose.Schema(
       type: String,
       enum: ['Male', 'Female'],
     },
+    governorate: {
+      type: String,
+      enum: [
+        'Alexandria',
+        'Aswan',
+        'Asyut',
+        'Beheira',
+        'Beni Suef',
+        'Cairo',
+        'Dakahlia',
+        'Damietta',
+        'Faiyum',
+        'Gharbia',
+        'Giza',
+        'Ismailia',
+        'Kafr El Sheikh',
+        'Luxor',
+        'Matruh',
+        'Minya',
+        'Monufia',
+        'New Valley',
+        'North Sinai',
+        'Port Said',
+        'Qalyubia',
+        'Qena',
+        'Red Sea',
+        'Sharqia',
+        'Sohag',
+        'South Sinai',
+        'Suez',
+      ],
+      required: [true, 'please enter your governorate'],
+    },
+    rating: {
+      type: Number,
+      max: 5,
+      min: 0,
+      default: 2,
+    },
     maritalStatus: {
       type: String,
       enum: [
@@ -66,6 +105,7 @@ const doctorSchema = new mongoose.Schema(
     address: String,
     birthday: Date,
   },
+
   { timestamps: true }
 );
 //hash the password

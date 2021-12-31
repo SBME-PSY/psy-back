@@ -1,9 +1,12 @@
 const express = require('express');
 
 const { userController, userAuthentication } = require('../controllers');
+const { authFun } = require('../utils');
+const doctorRouter = require('./doctorRouter');
 
 const router = express.Router();
-router.route('/').get(userAuthentication.protect, userController.getAllUsers);
+router.use('/find-doctor', doctorRouter);
+router.route('/').get(authFun.protect, userController.getAllUsers);
 
 router.route('/signup').post(userAuthentication.signUp);
 router.route('/login').post(userAuthentication.logIn);
@@ -13,5 +16,5 @@ router
   .patch(userAuthentication.resetPassword);
 router
   .route('/update-password')
-  .patch(userAuthentication.protect, userAuthentication.updatePassword);
+  .patch(authFun.protect, userAuthentication.updatePassword);
 module.exports = router;
