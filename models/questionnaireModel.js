@@ -4,6 +4,10 @@ const answerSchema = new mongoose.Schema(
   {
     body: String,
     weight: Number,
+    choosen: {
+      type: Boolean,
+      deafult: false,
+    },
   },
   { timestamps: true }
 );
