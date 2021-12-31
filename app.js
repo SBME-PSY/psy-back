@@ -3,9 +3,11 @@ const morgan = require('morgan');
 const cors = require('cors');
 const {
   articleRoutes,
-  userRoutes,
   adminRoutes,
+  userRoutes,
   doctorRoutes,
+  resultRouters,
+  questionnaireRouters,
 } = require('./routes');
 const { AppError } = require('./utils');
 const { errorController } = require('./controllers'); //in progress
@@ -24,6 +26,8 @@ app.use('/psy/users', userRoutes);
 app.use('/psy/doctors', doctorRoutes);
 app.use('/psy/admins', adminRoutes);
 app.use('/psy/articles', articleRoutes);
+app.use('/psy/results', resultRouters);
+app.use('/psy/questionnaire', questionnaireRouters);
 app.use('*', (req, res, next) => {
   next(new AppError('Page Not Found ', 404));
 });
