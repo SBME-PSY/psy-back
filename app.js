@@ -6,8 +6,8 @@ const {
   adminRoutes,
   userRoutes,
   doctorRoutes,
-  resultRouters,
-  questionnaireRouters,
+  resultRoutes,
+  questionnaireRoutes,
 } = require('./routes');
 const { AppError } = require('./utils');
 const { errorController } = require('./controllers'); //in progress
@@ -26,8 +26,8 @@ app.use('/psy/users', userRoutes);
 app.use('/psy/doctors', doctorRoutes);
 app.use('/psy/admins', adminRoutes);
 app.use('/psy/articles', articleRoutes);
-app.use('/psy/results', resultRouters);
-app.use('/psy/questionnaire', questionnaireRouters);
+app.use('/psy/results', resultRoutes);
+app.use('/psy/questionnaires', questionnaireRoutes);
 app.use('*', (req, res, next) => {
   next(new AppError('Page Not Found ', 404));
 });

@@ -1,5 +1,5 @@
 const express = require('express');
-const resultController = require('../controllers/resultController');
+const { resultController } = require('../controllers');
 const { authFun } = require('../utils');
 const { authorize } = require('../middleware');
 
@@ -9,13 +9,11 @@ router
   .get(
     authFun.protect,
     authorize.authorize('user'),
-    resultController.getAllResults
-  );
-router
-  .route('/:userId')
+    resultController.getUserResults
+  )
   .post(
     authFun.protect,
     authorize.authorize('user'),
-    resultController.careateResult
+    resultController.createResult
   );
 module.exports = router;

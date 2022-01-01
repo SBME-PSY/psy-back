@@ -7,3 +7,4 @@ exports.doctorAuthentication = require('./authentication/doctorAuthentication');
 exports.userAuthentication = require('./authentication/userAuthentication');
 exports.articleController = require('./articleController');
 exports.questionnaireController = require('./questionnaireController');
+exports.resultController = require('./resultController');
