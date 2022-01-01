@@ -31,7 +31,7 @@ const scoreSchema = new mongoose.Schema(
 
 const resultSchema = new mongoose.Schema(
   {
-    user: mongoose.Schema.Types.ObjectId,
+    user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
     tags: [String],
     questions: [questionSchema],
     scores: [scoreSchema],

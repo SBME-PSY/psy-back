@@ -1,19 +1,13 @@
-const { asyncHandler } = require('../middleware');
+const { asyncHandler, responseHandler } = require('../middleware');
 const { questionnaireModel } = require('../models');
 
 exports.getQuestionnaires = asyncHandler(async (req, res, next) => {
   const questionnaires = await questionnaireModel.find();
-  res.status(200).json({
-    status: 'success',
-    data: questionnaires,
-  });
+  responseHandler.sendResponse(res, 200, 'sucess', questionnaires, null, null);
 });
 exports.getSingleQuestionnaire = asyncHandler(async (req, res, next) => {
   const questionnaire = await questionnaireModel.findById(
     req.params.questionnaireId
   );
-  res.status(200).json({
-    status: 'success',
-    data: questionnaire,
-  });
+  responseHandler.sendResponse(res, 200, 'sucess', questionnaire, null, null);
 });

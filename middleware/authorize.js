@@ -6,7 +6,7 @@ exports.authorize =
     if (!roles.includes(req.user.role)) {
       return next(
         new AppError(
-          `User role ${req.user.role} is not authorized to access this route`,
+          `role ${req.user.role} is not authorized to access this route`,
           403
         )
       );
