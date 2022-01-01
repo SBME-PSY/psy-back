@@ -45,7 +45,7 @@ exports.logIn = asyncHandler(async (req, res, next) => {
     );
   }
   const token = authFun.getSignToken(currentDoctor._id);
-  responseHandler.sendResponse(res, 201, 'success', currentDoctor, token, null);
+  responseHandler.sendResponse(res, 200, 'success', currentDoctor, token, null);
 });
 
 exports.forgotPassword = asyncHandler(async (req, res, next) => {
@@ -95,7 +95,7 @@ exports.resetPassword = asyncHandler(async (req, res, next) => {
   };
   const currentDoctor = await doctorModel.findOne(query).select('+password');
 
-  if (!currentDoctor) next(new AppError('your reset token is expired'));
+  if (!currentDoctor) next(new AppError('your reset token has expired'));
   //2)if its ok reset password and give the jwt
   currentDoctor.password = req.body.password;
   currentDoctor.confirmPassword = req.body.confirmPassword;

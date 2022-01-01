@@ -10,7 +10,7 @@ router
   .route('/')
   .get(
     authFun.protect,
-    authorize.authorize('user'),
+    authorize.authorize('user', 'doctor'),
     doctorController.getAllDoctors
   );
 
