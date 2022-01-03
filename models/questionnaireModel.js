@@ -37,6 +37,10 @@ const questionnairSchema = new mongoose.Schema(
     scores: [scoreSchema],
     description: String,
     rules: String,
+    user: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Doctor',
+    },
   },
   { timestamps: true }
 );
