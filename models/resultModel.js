@@ -21,6 +21,10 @@ const questionSchema = new mongoose.Schema(
 
 const resultSchema = new mongoose.Schema(
   {
+    questionnaireID: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Questionnair',
+    },
     user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
     tags: String,
     questions: [questionSchema],
