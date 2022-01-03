@@ -32,11 +32,15 @@ const scoreSchema = new mongoose.Schema(
 
 const questionnairSchema = new mongoose.Schema(
   {
-    tags: [String],
+    tag: String,
     questions: [questionSchema],
     scores: [scoreSchema],
     description: String,
     rules: String,
+    user: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Doctor',
+    },
   },
   { timestamps: true }
 );

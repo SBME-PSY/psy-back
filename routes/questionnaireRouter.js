@@ -5,7 +5,14 @@ const { authorize } = require('../middleware');
 
 const router = express.Router();
 
-router.route('/').get(questionnaireController.getQuestionnaires);
+router
+  .route('/')
+  .get(questionnaireController.getQuestionnaires)
+  .post(
+    authFun.protect,
+    authorize('doctor'),
+    questionnaireController.createQuestionnaire
+  );
 router
   .route('/:questionnaireId')
   .get(questionnaireController.getSingleQuestionnaire);

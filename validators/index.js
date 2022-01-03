@@ -5,3 +5,5 @@ exports.doctorAuthValidators = require('./doctorValidators/doctorSignupValidatio
 
 exports.userAuthValidators = require('./userValidators/userSignupValidations');
 exports.articleValidators = require('./articleValidators/articleAllValidators');
+
+exports.questionnaireValidators = require('./questionnaireValidators/questionnaireValidators');
