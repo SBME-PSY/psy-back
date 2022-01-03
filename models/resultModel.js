@@ -19,22 +19,12 @@ const questionSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-const scoreSchema = new mongoose.Schema(
-  {
-    min: Number,
-    max: Number,
-    result: String,
-    description: String,
-  },
-  { timestamps: true }
-);
-
 const resultSchema = new mongoose.Schema(
   {
     user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
-    tags: [String],
+    tags: String,
     questions: [questionSchema],
-    scores: [scoreSchema],
+    score: Number,
     description: String,
     rules: String,
   },
