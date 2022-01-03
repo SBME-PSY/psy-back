@@ -5,6 +5,7 @@ const { AppError } = require('./index');
 
 exports.getDescription = asyncHandler(
   async (score, answeredQuestionnnaireId) => {
+    console.log(answeredQuestionnnaireId, score);
     const scores = await questionnaireModel.aggregate([
       {
         $match: {
@@ -26,7 +27,7 @@ exports.getDescription = asyncHandler(
         },
       },
     ]);
-
+    console.log(scores);
     return scores[0].scores.description;
   }
 );
@@ -57,6 +58,5 @@ exports.calacReasult = (req, res, next) => {
         403
       )
     );
-  }
-  return score;
+  } else return score;
 };

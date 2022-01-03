@@ -20,15 +20,15 @@ exports.createQuestionnaire = asyncHandler(async (req, res, next) => {
   );
 
   if (error) {
-    return new AppError('Questionnair Schema is not valid', 400);
+    return next(new AppError(error, 400));
   }
-  
+
   value.user = req.user._id;
 
   const questionnair = await questionnaireModel.create(value);
 
   responseHandler.sendResponse(res, 201, 'success', questionnair, null, null);
- });
+});
 
 exports.UpdateQuestionnaire = asyncHandler(async (req, res, next) => {
   const { error, value } = questionnaireValidators.questionnairSchema.validate(

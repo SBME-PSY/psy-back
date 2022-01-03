@@ -10,7 +10,7 @@ router
   .get(questionnaireController.getQuestionnaires)
   .post(
     authFun.protect,
-    authorize('doctor'),
+    authorize.authorize('doctor'),
     questionnaireController.createQuestionnaire
   );
 router
