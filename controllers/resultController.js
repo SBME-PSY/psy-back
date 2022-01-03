@@ -9,26 +9,28 @@ exports.getUserResults = asyncHandler(async (req, res, next) => {
   responseHandler.sendResponse(res, 200, 'sucess', allResults, null, null);
 });
 exports.createResult = asyncHandler(async (req, res, next) => {
-  const { error } =
+  const { error, value } =
     questionnaireResultValidators.questionnaireResultValidators.validate(
       req.body
     );
   if (error) {
-    return next(new AppError(error, 400));
+    return next(new AppError('please enter questionnare id ', 400));
   }
 
   if (!req.body.questionnaireID) {
     return next(new AppError('please enter questionnare id ', 400));
   }
-  const score = getQuestionnaireResult.calacReasult(req, res, next);
+  const score = getQuestionnaireResult.calacReasult(value, res, next);
+  const { questionnaireID } = value;
   const description = await getQuestionnaireResult.getDescription(
     score,
-    req.body.questionnaireID
+    questionnaireID,
+    next
   );
 
   const result = {
     // eslint-disable-next-line node/no-unsupported-features/es-syntax
-    ...req.body,
+    ...value,
     user: req.user._id,
     score: score,
     description: description,
