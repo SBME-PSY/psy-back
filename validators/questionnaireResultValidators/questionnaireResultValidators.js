@@ -2,7 +2,7 @@ const Joi = require('joi');
 Joi.objectId = require('joi-objectid')(Joi);
 
 exports.questionnaireResultValidators = Joi.object({
-  questionnaireID: Joi.objectId,
+  questionnaireID: Joi.objectId(),
   tags: Joi.string().required(),
   questions: Joi.array()
     .items(
