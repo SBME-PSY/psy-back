@@ -36,7 +36,7 @@ exports.UpdateQuestionnaire = asyncHandler(async (req, res, next) => {
   );
 
   if (error) {
-    return next(new AppError('Questionnair Schema is not valid', 400));
+    return next(new AppError(error, 400));
   }
   const UpdatedQuestionnaire = await questionnaireModel.findByIdAndUpdate(
     req.params.questionnaireId,
