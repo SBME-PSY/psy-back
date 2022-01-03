@@ -4,8 +4,7 @@ const { questionnaireModel } = require('../models');
 const { AppError } = require('./index');
 
 exports.getDescription = asyncHandler(
-  async (score, answeredQuestionnnaireId) => {
-    console.log(answeredQuestionnnaireId, score);
+  async (score, answeredQuestionnnaireId, next) => {
     const scores = await questionnaireModel.aggregate([
       {
         $match: {
@@ -27,14 +26,16 @@ exports.getDescription = asyncHandler(
         },
       },
     ]);
-    console.log(scores);
+    if (!scores.length) {
+      return next(new AppError('score error or score out of range ,', 400));
+    }
     return scores[0].scores.description;
   }
 );
 
-exports.calacReasult = (req, res, next) => {
+exports.calacReasult = (value, res, next) => {
   let score = 0;
-  const { questions } = req.body;
+  const { questions } = value;
   const indexOfnotanswerdQuestions = [];
   questions.forEach((question, questionIndex) => {
     const { answers } = question;
