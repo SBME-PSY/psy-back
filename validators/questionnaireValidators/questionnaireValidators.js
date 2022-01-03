@@ -22,7 +22,7 @@ exports.questionnairSchema = Joi.object({
       description: Joi.string(),
     })
   ),
-  tag: Joi.string(),
+  tag: Joi.string().required(),
   rules: Joi.string().required(),
   description: Joi.string().required(),
 });
