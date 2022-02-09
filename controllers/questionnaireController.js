@@ -23,7 +23,9 @@ exports.createQuestionnaire = asyncHandler(async (req, res, next) => {
     return next(new AppError(error, 400));
   }
 
-  value.user = req.user._id;
+  value.author = req.user._id;
+
+  value.authorModel = req.user.role[0].toUpperCase() + req.user.role.slice(1);
 
   const questionnair = await questionnaireModel.create(value);
 
