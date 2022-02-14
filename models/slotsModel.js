@@ -1,12 +1,12 @@
 const mongoose = require('mongoose');
 
 const slotSchema = new mongoose.Schema({
-  doctorid: {
+  doctor: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Doctor',
     required: [true, 'a doctor is required'],
   },
-  clinicid: {
+  clinic: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Clinic',
     required: [true, 'a clinic is required'],
@@ -17,6 +17,10 @@ const slotSchema = new mongoose.Schema({
   },
   duration: {
     type: Number,
+    validate: {
+      validator: Number.isInteger,
+      message: '{VALUE} is not an integer value',
+    },
     required: [true, 'a duration is required'],
   },
   reserved: {

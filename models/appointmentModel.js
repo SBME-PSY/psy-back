@@ -1,11 +1,11 @@
 const mongoose = require('mongoose');
 
 const appointmentSchema = new mongoose.Schema({
-  userid: {
+  user: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
   },
-  slotid: {
+  slot: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Slot',
   },

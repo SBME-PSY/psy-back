@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 const clinicSchema = new mongoose.Schema({
-  doctors: {
+  doctor: {
     type: [mongoose.Schema.Types.ObjectId],
     ref: 'Doctor',
     required: [true, 'a doctor is required'],
@@ -28,6 +28,11 @@ const clinicSchema = new mongoose.Schema({
   },
   price: {
     type: Number,
+    min: 0,
+    validate: {
+      validator: Number.isInteger,
+      message: '{VALUE} is not an integer value',
+    },
     required: [true, 'a price is required'],
   },
 });
