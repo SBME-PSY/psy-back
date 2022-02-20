@@ -1,8 +1,8 @@
 const mongoose = require('mongoose');
 
 const clinicSchema = new mongoose.Schema({
-  doctor: {
-    type: [mongoose.Schema.Types.ObjectId],
+  doctorId: {
+    type: mongoose.Schema.Types.ObjectId,
     ref: 'Doctor',
     required: [true, 'a doctor is required'],
   },
@@ -18,7 +18,7 @@ const clinicSchema = new mongoose.Schema({
     max: 5,
     min: 0,
   },
-  phoneNumber: {
+  phoneNumbers: {
     type: [String],
     maxLength: [13, 'the phone nuber is too long'],
     minLength: [11, 'the phone nuber is too short'],

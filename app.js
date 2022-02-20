@@ -8,6 +8,8 @@ const {
   doctorRoutes,
   resultRoutes,
   questionnaireRoutes,
+  clinicRoutes,
+  slotRoutes,
 } = require('./routes');
 const { AppError } = require('./utils');
 const { errorController } = require('./controllers'); //in progress
@@ -28,6 +30,8 @@ app.use('/psy/admins', adminRoutes);
 app.use('/psy/articles', articleRoutes);
 app.use('/psy/results', resultRoutes);
 app.use('/psy/questionnaires', questionnaireRoutes);
+app.use('/psy/clinics', clinicRoutes);
+app.use('/psy/slots', slotRoutes);
 app.use('*', (req, res, next) => {
   next(new AppError('Page Not Found ', 404));
 });

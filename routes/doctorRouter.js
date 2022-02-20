@@ -3,6 +3,8 @@ const path = require('path');
 
 const { advancedResults, fileUpload, authorize } = require('../middleware');
 const { doctorController, doctorAuthentication } = require('../controllers');
+const clinicRouter = require('./clinicRouter');
+
 const { authFun } = require('../utils');
 
 const router = express.Router({ mergeParams: true });
@@ -55,4 +57,27 @@ router
     ),
     doctorController.updateDoctorProfile
   );
+router.use('/clinics', clinicRouter);
+
+// router
+//   .route('/clinics/:clinicId/slots')
+//   .post(
+//     authFun.protect,
+//     authorize.authorize('doctor'),
+//     doctorController.addSlot
+//   )
+//   .get(
+//     authFun.protect,
+//     authorize.authorize('doctor'),
+//     doctorController.getClinicSlots
+//   );
+
+// router
+//   .route('/clinics/slots/:slotId')
+//   .patch(
+//     authFun.protect,
+//     authorize.authorize('doctor'),
+//     advancedResults.filterBody('from', 'to', 'reserved'),
+//     doctorController.updateSlot
+//   );
 module.exports = router;
