@@ -57,7 +57,7 @@ exports.updateDoctorProfile = asyncHandler(async (req, res, next) => {
       'https://ui-avatars.com/api/?rounded=true&background=fff&size=512&name=';
     if (temp.picture.startsWith(uri)) {
       const initials = req.body.name.split(' ').join('+');
-      const picURL = `${uri + initials}.png`;
+      const picURL = `${uri + initials}`;
       req.body.picture = picURL;
     }
   }
