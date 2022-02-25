@@ -32,7 +32,7 @@ const userSchema = new mongoose.Schema({
   },
   sex: {
     type: String,
-    enum: ['male', 'female'],
+    enum: ['Male', 'Female'],
   },
   maritalStatus: {
     type: String,

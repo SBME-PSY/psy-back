@@ -116,7 +116,7 @@ doctorSchema.pre('save', function () {
     const uri =
       'https://ui-avatars.com/api/?rounded=true&background=fff&size=512&name=';
     const initials = this.name.split(' ').join('+');
-    const picURL = `${uri + initials}.png`;
+    const picURL = `${uri + initials}`;
     this.picture = picURL;
   }
 });
