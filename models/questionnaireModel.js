@@ -37,9 +37,15 @@ const questionnairSchema = new mongoose.Schema(
     scores: [scoreSchema],
     description: String,
     rules: String,
-    user: {
+    author: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'Doctor',
+      required: true,
+      refPath: 'authorModel',
+    },
+    authorModel: {
+      type: String,
+      enum: ['Doctor', 'Admin'],
+      required: true,
     },
   },
   { timestamps: true }
