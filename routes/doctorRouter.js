@@ -59,25 +59,4 @@ router
   );
 router.use('/clinics', clinicRouter);
 
-// router
-//   .route('/clinics/:clinicId/slots')
-//   .post(
-//     authFun.protect,
-//     authorize.authorize('doctor'),
-//     doctorController.addSlot
-//   )
-//   .get(
-//     authFun.protect,
-//     authorize.authorize('doctor'),
-//     doctorController.getClinicSlots
-//   );
-
-// router
-//   .route('/clinics/slots/:slotId')
-//   .patch(
-//     authFun.protect,
-//     authorize.authorize('doctor'),
-//     advancedResults.filterBody('from', 'to', 'reserved'),
-//     doctorController.updateSlot
-//   );
 module.exports = router;
