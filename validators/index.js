@@ -9,3 +9,5 @@ exports.articleValidators = require('./articleValidators/articleAllValidators');
 exports.questionnaireValidators = require('./questionnaireValidators/questionnaireValidators');
 
 exports.questionnaireResultValidators = require('./questionnaireResultValidators/questionnaireResultValidators');
+exports.clinicValidators = require('./clinicValidators/clinicsValidators');
+exports.slotValidators = require('./slotValidators/slotValidators');

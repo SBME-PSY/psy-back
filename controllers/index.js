@@ -8,3 +8,5 @@ exports.userAuthentication = require('./authentication/userAuthentication');
 exports.articleController = require('./articleController');
 exports.questionnaireController = require('./questionnaireController');
 exports.resultController = require('./resultController');
+exports.clinicController = require('./clinicController');
+exports.slotController = require('./slotController');

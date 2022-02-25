@@ -3,6 +3,8 @@ const path = require('path');
 
 const { advancedResults, fileUpload, authorize } = require('../middleware');
 const { doctorController, doctorAuthentication } = require('../controllers');
+const clinicRouter = require('./clinicRouter');
+
 const { authFun } = require('../utils');
 
 const router = express.Router({ mergeParams: true });
@@ -55,4 +57,6 @@ router
     ),
     doctorController.updateDoctorProfile
   );
+router.use('/clinics', clinicRouter);
+
 module.exports = router;

@@ -1,8 +1,8 @@
 const mongoose = require('mongoose');
 
 const clinicSchema = new mongoose.Schema({
-  doctor: {
-    type: [mongoose.Schema.Types.ObjectId],
+  doctorId: {
+    type: mongoose.Schema.Types.ObjectId,
     ref: 'Doctor',
     required: [true, 'a doctor is required'],
   },
@@ -18,11 +18,27 @@ const clinicSchema = new mongoose.Schema({
     max: 5,
     min: 0,
   },
-  phoneNumber: {
+  phoneNumbers: {
     type: [String],
     maxLength: [13, 'the phone nuber is too long'],
     minLength: [11, 'the phone nuber is too short'],
-    match: [/^(\+2)?01[0-25]\d{8}$/, 'Please add a valid phone number'],
+    validate: {
+      validator: function (value) {
+        // eslint-disable-next-line no-plusplus
+        for (let i = 0; i < value.length; i++) {
+          if (
+            !value[i].match(/^(\+2)?01[0-25]\d{8}$/) &&
+            !value[i].match(/^02\d{8}$/)
+          ) {
+            return false;
+          }
+        }
+
+        return true;
+      },
+      message:
+        'please add avalid number 02xxxxxxxx for lan or  010 011 012 015xxxxxxxx for phone number ',
+    },
     required: [true, 'a phone number is required'],
     unique: true,
   },

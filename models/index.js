@@ -4,3 +4,5 @@ exports.adminModel = require('./adminModel');
 exports.articleModel = require('./articleModel');
 exports.resultModel = require('./resultModel');
 exports.questionnaireModel = require('./questionnaireModel');
+exports.clinicModel = require('./clinicModel');
+exports.slotModel = require('./slotModel');
