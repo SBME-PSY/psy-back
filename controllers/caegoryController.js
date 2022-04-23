@@ -5,7 +5,7 @@ const { AppError } = require('../utils');
 
 exports.addCategory = asyncHandler(async (req, res, next) => {
   const { error, value } =
-    questionnaireCategoryValidator.slotsVlaidatorSchema.validate(req.body);
+    questionnaireCategoryValidator.cateoryVlaidatorSchema.validate(req.body);
   if (error) {
     return next(new AppError(error, 400));
   }

@@ -1,6 +1,6 @@
 const Joi = require('joi');
 Joi.objectId = require('joi-objectid')(Joi);
 
-exports.slotsVlaidatorSchema = Joi.object({
+exports.cateoryVlaidatorSchema = Joi.object({
   name: Joi.string().required(),
 });
