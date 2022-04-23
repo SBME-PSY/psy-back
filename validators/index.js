@@ -11,3 +11,4 @@ exports.questionnaireValidators = require('./questionnaireValidators/questionnai
 exports.questionnaireResultValidators = require('./questionnaireResultValidators/questionnaireResultValidators');
 exports.clinicValidators = require('./clinicValidators/clinicsValidators');
 exports.slotValidators = require('./slotValidators/slotValidators');
+exports.questionnaireCategoryValidator = require('./questionnaireCategoryValidator/questionnaireCategoryValidator');
