@@ -1,4 +1,5 @@
 const Joi = require('joi');
+Joi.objectId = require('joi-objectid')(Joi);
 
 exports.questionnairSchema = Joi.object({
   questions: Joi.array()
@@ -22,7 +23,7 @@ exports.questionnairSchema = Joi.object({
       description: Joi.string(),
     })
   ),
-  tag: Joi.string().required(),
+  category: Joi.objectId(),
   rules: Joi.string().required(),
   description: Joi.string().required(),
 });

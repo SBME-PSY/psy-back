@@ -3,7 +3,7 @@ Joi.objectId = require('joi-objectid')(Joi);
 
 exports.questionnaireResultValidators = Joi.object({
   questionnaireID: Joi.objectId(),
-  tags: Joi.string().required(),
+  category: Joi.objectId(),
   questions: Joi.array()
     .items(
       Joi.object({
@@ -13,15 +13,13 @@ exports.questionnaireResultValidators = Joi.object({
             body: Joi.string().required(),
             weight: Joi.number().required(),
             choosen: Joi.boolean().required(),
-            _id: Joi.objectId(),
-            createdAt: Joi.date(),
-            updatedAt: Joi.date(),
           })
         ),
-        _id: Joi.objectId(),
-        createdAt: Joi.date(),
-        updatedAt: Joi.date(),
       })
     )
     .required(),
+  description: Joi.string().required(),
+  rules: Joi.string().required(),
+  score: Joi.number().required(),
+  user: Joi.objectId(),
 });
