@@ -4,6 +4,7 @@ exports.questionnaireValidators = require('./questionnaireValidators/questionnai
 exports.doctorAuthValidators = require('./doctorValidators/doctorSignupValidations');
 
 exports.userAuthValidators = require('./userValidators/userSignupValidations');
+exports.userValidators = require('./userValidators/userVlaidators');
 exports.articleValidators = require('./articleValidators/articleAllValidators');
 
 exports.questionnaireValidators = require('./questionnaireValidators/questionnaireValidators');
