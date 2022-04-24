@@ -32,11 +32,19 @@ const scoreSchema = new mongoose.Schema(
 
 const questionnairSchema = new mongoose.Schema(
   {
-    tag: String,
+    category: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'QuestionnaireCategory',
+    },
     questions: [questionSchema],
     scores: [scoreSchema],
     description: String,
     rules: String,
+    groupID: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'QuestionnaireGroup',
+    },
+    sequence: Number,
     author: {
       type: mongoose.Schema.Types.ObjectId,
       required: true,

@@ -30,4 +30,11 @@ router
     authorize.authorize('admin'),
     questionnaireController.deleteQuestionnaire
   );
+
+router
+  .route('/group')
+  .post(
+    authorize.authorize('admin', 'doctor'),
+    questionnaireController.createQuestionnaireGroup
+  );
 module.exports = router;
