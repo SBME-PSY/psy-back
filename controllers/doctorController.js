@@ -2,14 +2,9 @@ const path = require('path');
 const fs = require('fs');
 const APIFeatures = require('../utils/apiFeatures');
 
-const { doctorModel } = require('../models');
+const { doctorModel, followUpRequestModel, userModel } = require('../models');
 const { AppError } = require('../utils');
 const { asyncHandler, responseHandler } = require('../middleware');
-
-// exports.getAllDoctors = asyncHandler(async (req, res, next) => {
-//   const allDoctors = await doctorModel.find();
-//   responseHandler.sendResponse(res, 200, 'success', allDoctors, null, null);
-// });
 
 exports.getAllDoctors = asyncHandler(async (req, res, next) => {
   const features = new APIFeatures(doctorModel.find(), req.query)
@@ -27,7 +22,7 @@ exports.getDoctorProfile = asyncHandler(async (req, res, next) => {
   const doctor = await doctorModel
     .findById(req.user.id)
     .select(
-      'name email picture createdAt address phone sex maritalStatus clinics'
+      'name email picture createdAt address phone sex maritalStatus clinics status'
     );
 
   if (doctor.picture.startsWith('https://')) {
@@ -69,4 +64,49 @@ exports.updateDoctorProfile = asyncHandler(async (req, res, next) => {
     runValidators: true,
   });
   responseHandler.sendResponse(res, 200, 'success', doctor, null, null);
+});
+
+exports.getPendingFollowUpRequests = asyncHandler(async (req, res, next) => {
+  const allFollowUpRequests = await followUpRequestModel.find({
+    doctor: req.user._id,
+    status: 'pending',
+  });
+  responseHandler.sendResponse(
+    res,
+    200,
+    'success',
+    allFollowUpRequests,
+    null,
+    null
+  );
+});
+
+exports.followUpRequestResponse = asyncHandler(async (req, res, next) => {
+  const { followUpRequestId, response } = req.body;
+  const followUpRequest = await followUpRequestModel.findByIdAndUpdate(
+    followUpRequestId,
+    {
+      status: response,
+    },
+    { new: true }
+  );
+
+  if (response === 'accepted') {
+    await userModel.findByIdAndUpdate(followUpRequest.user, {
+      doctorId: req.user._id,
+    });
+  } else if (response === 'rejected') {
+    await userModel.findByIdAndUpdate(followUpRequest.user, {
+      doctorId: null,
+    });
+  }
+
+  responseHandler.sendResponse(
+    res,
+    200,
+    'success',
+    followUpRequest,
+    null,
+    null
+  );
 });

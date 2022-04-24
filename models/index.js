@@ -7,3 +7,4 @@ exports.questionnaireModel = require('./questionnaireModel');
 exports.clinicModel = require('./clinicModel');
 exports.slotModel = require('./slotModel');
 exports.questionnaireCategoryModel = require('./questionnaireCategoryModel');
+exports.followUpRequestModel = require('./followUpRequestModel');

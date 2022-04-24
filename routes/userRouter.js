@@ -17,4 +17,9 @@ router
 router
   .route('/update-password')
   .patch(authFun.protect, userAuthentication.updatePassword);
+
+router
+  .route('/followUpRequest')
+  .get(userController.getFollowUpRequestStatus)
+  .post(userController.doctorFollowUpRequest);
 module.exports = router;
