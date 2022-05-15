@@ -29,7 +29,6 @@ exports.getDoctorProfile = asyncHandler(async (req, res, next) => {
     .select(
       'name email picture createdAt address phone sex maritalStatus clinics'
     );
-
   if (doctor.picture.startsWith('https://')) {
     return res.status(200).json({ success: true, data: doctor });
   }
