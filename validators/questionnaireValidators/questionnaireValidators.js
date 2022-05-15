@@ -1,6 +1,12 @@
 const Joi = require('joi');
 Joi.objectId = require('joi-objectid')(Joi);
 
+exports.questionnaireGroupSchema = Joi.object({
+  name: Joi.string().required(),
+  description: Joi.string().required(),
+  category: Joi.objectId(),
+});
+
 exports.questionnairSchema = Joi.object({
   questions: Joi.array()
     .items(
@@ -26,4 +32,6 @@ exports.questionnairSchema = Joi.object({
   category: Joi.objectId(),
   rules: Joi.string().required(),
   description: Joi.string().required(),
+  groupID: Joi.objectId(),
+  sequence: Joi.number(),
 });

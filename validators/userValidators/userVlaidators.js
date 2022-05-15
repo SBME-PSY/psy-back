@@ -11,11 +11,9 @@ const maritalStatus = [
 
 const sex = ['Male', 'Female'];
 
-exports.userSignupValidationScheme = Joi.object({
-  name: Joi.string().required(),
-  email: Joi.string().normalize().lowercase().required(),
-  password: Joi.string().required(),
-  confirmPassword: Joi.ref('password'),
+exports.editUserProfile = Joi.object({
+  name: Joi.string(),
+  email: Joi.string().normalize().lowercase(),
   phone: Joi.string(),
   address: Joi.string(),
   sex: Joi.string().valid(...sex),
@@ -23,10 +21,4 @@ exports.userSignupValidationScheme = Joi.object({
   role: Joi.string().equal('user'),
   birthday: Joi.string().isoDate(),
   age: Joi.number().integer().min(18),
-});
-
-exports.userLoginValidationScheme = Joi.object({
-  email: Joi.string().normalize().lowercase().required(),
-  password: Joi.string().required(),
-  role: Joi.string().equal('user'),
 });

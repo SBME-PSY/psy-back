@@ -105,8 +105,7 @@ const doctorSchema = new mongoose.Schema(
     address: String,
     birthday: Date,
   },
-
-  { timestamps: true }
+  { timestamps: true, toJSON: { virtuals: true }, toObject: { virtuals: true } }
 );
 //hash the password
 doctorSchema.pre('save', preSave.cryptPassword);
@@ -120,7 +119,16 @@ doctorSchema.pre('save', function () {
     this.picture = picURL;
   }
 });
+doctorSchema.virtual('clinics', {
+  ref: 'Clinic',
+  localField: '_id',
+  foreignField: 'doctorId',
+});
 
+doctorSchema.pre(/^find/, function (next) {
+  this.populate('clinics');
+  next();
+});
 const doctorModel = mongoose.model('Doctor', doctorSchema);
 
 module.exports = doctorModel;

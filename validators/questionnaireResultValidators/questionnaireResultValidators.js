@@ -22,4 +22,6 @@ exports.questionnaireResultValidators = Joi.object({
   rules: Joi.string().required(),
   score: Joi.number().required(),
   user: Joi.objectId(),
+  groupID: Joi.objectId(),
+  sequence: Joi.number(),
 });

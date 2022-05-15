@@ -26,11 +26,19 @@ const resultSchema = new mongoose.Schema(
       ref: 'Questionnair',
     },
     user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
-    tags: String,
+    category: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'QuestionnaireCategory',
+    },
     questions: [questionSchema],
     score: Number,
     description: String,
     rules: String,
+    groupID: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'QuestionnaireGroup',
+    },
+    sequence: Number,
   },
   { timestamps: true }
 );
