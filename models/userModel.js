@@ -62,12 +62,13 @@ const userSchema = new mongoose.Schema(
     },
     passwordResetToken: String,
     passwordResetExpires: Date,
+    doctorId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Doctor',
+    },
   },
-  doctorId: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Doctor',
-  },
-}, { timestamps: true });
+  { timestamps: true }
+);
 
 //hash the password
 userSchema.pre('save', preSave.cryptPassword);
