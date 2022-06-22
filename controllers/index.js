@@ -11,4 +11,8 @@ exports.resultController = require('./resultController');
 exports.clinicController = require('./clinicController');
 exports.slotController = require('./slotController');
 exports.caegoryController = require('./caegoryController');
+<<<<<<< HEAD
 exports.reviewsController = require('./reviewsController');
+=======
+exports.socketEvents = require('./group-therapy/socketEventController');
+>>>>>>> refactor the code

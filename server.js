@@ -5,9 +5,19 @@ const http = require('http');
 const cors = require('cors');
 const socketIo = require('socket.io');
 const peer = require('peer');
-
 const app = require('./app');
+const { socketEvents } = require('./controllers');
 
+dotenv.config({ path: './config/config.env' });
+const connectDB = require('./config/db');
+
+connectDB();
+app.use(
+  cors({
+    origin: '*',
+    methods: ['GET', 'POSt'],
+  })
+);
 const server = http.createServer(app);
 const io = socketIo(server, {
   cors: {
@@ -15,31 +25,9 @@ const io = socketIo(server, {
     methods: ['GET', 'POST'],
   },
 });
-dotenv.config({ path: './config/config.env' });
-const connectDB = require('./config/db');
-
-connectDB();
-const { PeerServer } = peer;
-
-app.use(
-  cors({
-    origin: '*',
-    methods: ['GET', 'POSt'],
-  })
-);
-
-io.on('connection', (socket) => {
-  console.log('socket connected');
-  socket.on('join-room', (roomId, peerId) => {
-    socket.join(roomId);
-    socket.to(roomId).emit('user-connected', peerId);
-    socket.on('disconnect', () => {
-      console.log('socket disconnected');
-      socket.to(roomId).emit('user-disconnect', peerId);
-    });
-  });
-});
+io.on('connection', socketEvents);
 const peerPort = process.env.PEERPORT || 9000;
+const { PeerServer } = peer;
 const peerServer = PeerServer({ port: peerPort, path: '/myapp' });
 peerServer.on('connection', (client) => {
   console.log('client connected ');
