@@ -1,5 +1,4 @@
 const express = require('express');
-const morgan = require('morgan');
 const cors = require('cors');
 const mongoSanitize = require('express-mongo-sanitize');
 const {
@@ -23,11 +22,6 @@ app.use(express.json({ limit: '25mb' }));
 app.use(cors());
 app.use(mongoSanitize());
 app.use(express.static('public'));
-
-if (process.env.NODE_ENV === 'development') {
-  app.use(morgan('dev'));
-}
-
 app.use('/psy/users', userRoutes);
 app.use('/psy/doctors', doctorRoutes);
 app.use('/psy/admins', adminRoutes);
