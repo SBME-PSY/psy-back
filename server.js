@@ -18,17 +18,11 @@ if (process.env.NODE_ENV === 'development') {
 }
 
 connectDB();
-app.use(
-  cors({
-    origin: '*',
-    methods: ['GET', 'POSt'],
-  })
-);
+
 const server = http.createServer(app);
 const io = socketIo(server, {
   cors: {
     origin: true,
-    methods: ['GET', 'POST'],
   },
 });
 io.on('connection', socketEvents);
