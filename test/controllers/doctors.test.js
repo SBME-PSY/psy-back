@@ -72,25 +72,25 @@ describe('Doctor Controller', () => {
       })
       .catch((err) => done(err));
   });
-  let userResetPassword = '';
-  it('POST /psy/doctors/forgot-password', (done) => {
-    // eslint-disable-next-line camelcase
-    const email_role = {
-      email: doctor.email,
-      role: doctor.role,
-    };
-    chai
-      .request(server)
-      .post('/psy/doctors/forgot-password')
-      .send(email_role)
-      .then((res) => {
-        res.should.have.status(200);
-        // eslint-disable-next-line prefer-destructuring
-        userResetPassword = res.body.userResetPassword;
-        return done();
-      })
-      .catch((err) => done(err));
-  });
+  // let userResetPassword = '';
+  // it('POST /psy/doctors/forgot-password', (done) => {
+  //   // eslint-disable-next-line camelcase
+  //   const email_role = {
+  //     email: doctor.email,
+  //     role: doctor.role,
+  //   };
+  //   chai
+  //     .request(server)
+  //     .post('/psy/doctors/forgot-password')
+  //     .send(email_role)
+  //     .then((res) => {
+  //       res.should.have.status(200);
+  //       // eslint-disable-next-line prefer-destructuring
+  //       userResetPassword = res.body.userResetPassword;
+  //       return done();
+  //     })
+  //     .catch((err) => done(err));
+  // });
   // it(`POST /psy/doctors/reset-password/${userResetPassword}`, (done) => {
   //   const newPassword = {
   //     password: '123456789ss!',

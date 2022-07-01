@@ -58,6 +58,12 @@ router
     ),
     doctorController.updateDoctorProfile
   );
+
+router
+  .route('/followUp/pending')
+  .get(doctorController.getPendingFollowUpRequests)
+  .patch(doctorController.followUpRequestResponse);
+
 router.use('/clinics', clinicRouter);
 router.use('/:modelID/reviews', reviewsRouter);
 
