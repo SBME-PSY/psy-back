@@ -7,3 +7,4 @@ exports.questionnaireRoutes = require('./questionnaireRouter');
 exports.clinicRoutes = require('./clinicRouter');
 exports.slotRoutes = require('./slotRouter');
 exports.categoryRouter = require('./categoryRouter');
+exports.reviewsRouter = require('./reviewsRouter');

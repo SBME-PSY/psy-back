@@ -89,7 +89,7 @@ const doctorSchema = new mongoose.Schema(
       type: Number,
       max: 5,
       min: 0,
-      default: 2,
+      default: 0,
     },
     maritalStatus: {
       type: String,

@@ -11,3 +11,4 @@ exports.resultController = require('./resultController');
 exports.clinicController = require('./clinicController');
 exports.slotController = require('./slotController');
 exports.caegoryController = require('./caegoryController');
+exports.reviewsController = require('./reviewsController');
