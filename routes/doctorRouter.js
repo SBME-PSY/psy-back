@@ -4,6 +4,7 @@ const path = require('path');
 const { advancedResults, fileUpload, authorize } = require('../middleware');
 const { doctorController, doctorAuthentication } = require('../controllers');
 const clinicRouter = require('./clinicRouter');
+const reviewsRouter = require('./reviewsRouter');
 
 const { authFun } = require('../utils');
 
@@ -64,5 +65,6 @@ router
   .patch(doctorController.followUpRequestResponse);
 
 router.use('/clinics', clinicRouter);
+router.use('/:modelID/reviews', reviewsRouter);
 
 module.exports = router;
