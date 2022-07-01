@@ -23,12 +23,12 @@ const ReviewSchema = new mongoose.Schema(
       ref: 'User',
       required: true,
     },
-    reviewFor: {
+    modelID: {
       type: mongoose.Schema.Types.ObjectId,
       required: true,
-      refPath: 'for',
+      refPath: 'reviewFor',
     },
-    for: {
+    reviewFor: {
       type: String,
       enum: ['Doctor', 'Clinic', 'Article'],
       required: true,
@@ -36,6 +36,38 @@ const ReviewSchema = new mongoose.Schema(
   },
   { timestamps: true, toJSON: { virtuals: true }, toObject: { virtuals: true } }
 );
+
+ReviewSchema.index({ modelID: 1, user: 1 }, { unique: true });
+
+ReviewSchema.statics.getAverageRating = async function (modelID, reviewFor) {
+  const obj = await this.aggregate([
+    {
+      $match: { modelID },
+    },
+    {
+      $group: {
+        _id: '$modelID',
+        averageRating: { $avg: '$rating' },
+      },
+    },
+  ]);
+
+  try {
+    await this.model(reviewFor).findByIdAndUpdate(modelID, {
+      rating: obj[0].averageRating,
+    });
+  } catch (err) {
+    console.error(err);
+  }
+};
+
+ReviewSchema.post('save', function () {
+  this.constructor.getAverageRating(this.modelID, this.reviewFor);
+});
+
+ReviewSchema.pre('remove', function () {
+  this.constructor.getAverageRating(this.modelID, this.reviewFor);
+});
 
 const reviewModel = mongoose.model('Review', ReviewSchema);
 module.exports = reviewModel;
