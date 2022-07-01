@@ -96,9 +96,12 @@ exports.updateReview = asyncHandler(async (req, res, next) => {
     return next(new AppError(error.message, 400));
   }
 
-  review = await reviewModel.findOneAndUpdate({ _id: req.params.id }, value);
+  review = await reviewModel.findByIdAndUpdate(req.params.id, value, {
+    new: true,
+    runValidators: true,
+  });
 
-  review = await reviewModel.findOne({ _id: req.params.id });
+  review.save();
 
   responseHandler.sendResponse(res, 200, 'success', review);
 });
