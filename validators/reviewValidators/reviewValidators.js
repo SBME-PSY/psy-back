@@ -9,3 +9,9 @@ exports.reviewVlaidatorSchema = Joi.object({
   user: Joi.objectId().required(true, 'must be logged in to rate'),
   reviewFor: Joi.string().valid('doctor', 'clinic', 'article').required(),
 });
+
+exports.reviewUpdateSchema = Joi.object({
+  title: Joi.string(),
+  text: Joi.string(),
+  rating: Joi.number().min(1).max(5),
+});
