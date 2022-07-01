@@ -76,3 +76,49 @@ exports.addReview = asyncHandler(async (req, res, next) => {
 
   responseHandler.sendResponse(res, 201, 'success', review);
 });
+
+exports.updateReview = asyncHandler(async (req, res, next) => {
+  let review = await reviewModel.findById(req.params.id);
+
+  if (!review) {
+    return next(new AppError(`No review with the id of ${req.params.id}`, 404));
+  }
+
+  if (review.user.toString() !== req.user.id) {
+    return next(new AppError(`Not authorized to update review`, 401));
+  }
+
+  const { error, value } = reviewVlaidator.reviewUpdateSchema.validate(
+    req.body
+  );
+
+  if (error) {
+    return next(new AppError(error.message, 400));
+  }
+
+  review = await reviewModel.findOneAndUpdate({ _id: req.params.id }, value);
+
+  review = await reviewModel.findOne({ _id: req.params.id });
+
+  responseHandler.sendResponse(res, 200, 'success', review);
+});
+
+exports.deleteReview = asyncHandler(async (req, res, next) => {
+  const review = await reviewModel.findById(req.params.id);
+
+  if (!review) {
+    return next(new AppError(`No review with the id of ${req.params.id}`, 404));
+  }
+
+  // Make sure review belongs to user or user is admin
+  if (review.user.toString() !== req.user.id && req.user.role !== 'admin') {
+    return next(new AppError(`Not authorized to update review`, 401));
+  }
+
+  await review.remove();
+
+  res.status(200).json({
+    success: true,
+    data: {},
+  });
+});

@@ -14,6 +14,18 @@ router
     reviewsController.addReview
   );
 
-router.route('/:id').get(reviewsController.getReview);
+router
+  .route('/:id')
+  .get(reviewsController.getReview)
+  .patch(
+    authFun.protect,
+    authorize.authorize('user'),
+    reviewsController.updateReview
+  )
+  .delete(
+    authFun.protect,
+    authorize.authorize('user', 'admin'),
+    reviewsController.deleteReview
+  );
 
 module.exports = router;
