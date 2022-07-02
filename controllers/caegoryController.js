@@ -9,7 +9,15 @@ exports.addCategory = asyncHandler(async (req, res, next) => {
   if (error) {
     return next(new AppError(error, 400));
   }
-  questionnaireCategoryModel.create(value);
+  const category = new questionnaireCategoryModel();
+
+  category.name = value.name.en;
+
+  if (value.name.ar) {
+    category.set('name.ar', value.name.ar);
+  }
+
+  category.save();
 
   responseHandler.sendResponse(res, 201, 'success', value, null, null);
 });
