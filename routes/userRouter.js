@@ -20,6 +20,13 @@ router
     authorize.authorize('user'),
     userController.updateUserProfile
   );
+router
+  .route('/phq-results')
+  .get(
+    authFun.protect,
+    authorize.authorize('user'),
+    userController.getUserTests
+  );
 router.route('/signup').post(userAuthentication.signUp);
 router.route('/login').post(userAuthentication.logIn);
 router.route('/forgot-password').post(userAuthentication.forgotPassword);
