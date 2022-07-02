@@ -1,7 +1,15 @@
 const mongoose = require('mongoose');
+const mongooseIntl = require('mongoose-intl');
 
 const questionnaireCategorySchema = new mongoose.Schema({
-  name: String,
+  name: {
+    type: String,
+    intl: true,
+  },
+});
+
+questionnaireCategorySchema.plugin(mongooseIntl, {
+  languages: ['en', 'ar'],
 });
 
 const questionnaireCategoryModel = mongoose.model(
