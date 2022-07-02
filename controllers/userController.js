@@ -15,11 +15,16 @@ exports.getUserTests = asyncHandler(async (req, res, next) => {
   responseHandler.sendResponse(res, 200, 'success', allUserTests, null, null);
 });
 exports.getUserTest = asyncHandler(async (req, res, next) => {
-  // const userId = req.user._id;
   const resultid = req.params.resultID;
 
   const UserTest = await resultModel.findById(resultid);
-  // user: userId);
+
+  if (!UserTest) {
+    return next(new AppError(`No review with the id of ${req.params.id}`, 404));
+  }
+  if (UserTest.user.toString() !== req.user.id) {
+    return next(new AppError(`Not authorized to update review`, 401));
+  }
   responseHandler.sendResponse(res, 200, 'success', UserTest, null, null);
 });
 exports.doctorFollowUpRequest = asyncHandler(async (req, res, next) => {
