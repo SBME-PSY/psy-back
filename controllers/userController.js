@@ -20,10 +20,10 @@ exports.getUserTest = asyncHandler(async (req, res, next) => {
   const UserTest = await resultModel.findById(resultid);
 
   if (!UserTest) {
-    return next(new AppError(`No review with the id of ${req.params.id}`, 404));
+    return next(new AppError(`No result with the id of ${req.params.id}`, 404));
   }
   if (UserTest.user.toString() !== req.user.id) {
-    return next(new AppError(`Not authorized to update review`, 401));
+    return next(new AppError(`Not authorized to view the result`, 401));
   }
   responseHandler.sendResponse(res, 200, 'success', UserTest, null, null);
 });
