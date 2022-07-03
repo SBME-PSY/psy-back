@@ -16,7 +16,7 @@ const {
 } = require('./routes');
 const { AppError } = require('./utils');
 const { errorController } = require('./controllers'); //in progress
-
+app.use(mongoSanitize());
 const app = express();
 app.use(express.json({ limit: '25mb' }));
 
