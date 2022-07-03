@@ -1,5 +1,5 @@
 const { asyncHandler, responseHandler } = require('../middleware');
-const { resultModel, questionnairGroupResultModel } = require('../models');
+const { resultModel, questionnaireGroupResultModel } = require('../models');
 const { getQuestionnaireResult } = require('../utils');
 const { questionnaireResultValidators } = require('../validators');
 const { AppError } = require('../utils');
@@ -18,12 +18,9 @@ exports.createResult = asyncHandler(async (req, res, next) => {
     return next(new AppError(error, 400));
   }
 
-  if (!req.body.questionnaireID) {
-    return next(new AppError('please enter questionnare id ', 400));
-  }
   const score = getQuestionnaireResult.calacReasult(value, res, next);
   const { questionnaireID } = value;
-  const description = await getQuestionnaireResult.getDescription(
+  const descriptionResult = await getQuestionnaireResult.getDescription(
     score,
     questionnaireID,
     next
@@ -34,9 +31,11 @@ exports.createResult = asyncHandler(async (req, res, next) => {
     ...value,
     user: req.user._id,
     score: score,
-    description: description,
+    description: descriptionResult.description,
+    result: descriptionResult.result,
   };
-  if (value.groupID !== null) {
+
+  if (!value.groupID) {
     if (value.sequence === null) {
       return next(new AppError('please enter sequence', 400));
     }
@@ -44,13 +43,13 @@ exports.createResult = asyncHandler(async (req, res, next) => {
     result.sequence = value.sequence;
 
     if (result.sequence === 1) {
-      await questionnairGroupResultModel.create({
+      await questionnaireGroupResultModel.create({
         groupID: result.groupID,
         user: req.user._id,
         score: score,
       });
     } else {
-      await questionnairGroupResultModel.update(
+      await questionnaireGroupResultModel.updateOne(
         {
           groupID: result.groupID,
           user: req.user._id,

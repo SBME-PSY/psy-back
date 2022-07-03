@@ -23,13 +23,17 @@ exports.getDescription = asyncHandler(
       {
         $project: {
           'scores.description': 1,
+          'scores.result': 1,
         },
       },
     ]);
     if (!scores.length) {
       return next(new AppError('score error or score out of range ,', 400));
     }
-    return scores[0].scores.description;
+    return {
+      description: scores[0].scores.description,
+      result: scores[0].scores.result,
+    };
   }
 );
 

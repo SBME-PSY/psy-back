@@ -2,15 +2,21 @@ const Joi = require('joi');
 Joi.objectId = require('joi-objectid')(Joi);
 
 exports.questionnaireResultValidators = Joi.object({
-  questionnaireID: Joi.objectId(),
-  category: Joi.objectId(),
+  questionnaireID: Joi.objectId().required(),
+  category: Joi.objectId().required(),
   questions: Joi.array()
     .items(
       Joi.object({
-        body: Joi.string().required(),
+        body: Joi.object({
+          en: Joi.string(),
+          ar: Joi.string(),
+        }).required(),
         answers: Joi.array().items(
           Joi.object({
-            body: Joi.string().required(),
+            body: Joi.object({
+              en: Joi.string(),
+              ar: Joi.string(),
+            }).required(),
             weight: Joi.number().required(),
             choosen: Joi.boolean().required(),
           })
@@ -18,9 +24,10 @@ exports.questionnaireResultValidators = Joi.object({
       })
     )
     .required(),
-  description: Joi.string().required(),
-  rules: Joi.string().required(),
-  score: Joi.number().required(),
+  rules: Joi.object({
+    en: Joi.string(),
+    ar: Joi.string(),
+  }).required(),
   user: Joi.objectId(),
   groupID: Joi.objectId(),
   sequence: Joi.number(),
