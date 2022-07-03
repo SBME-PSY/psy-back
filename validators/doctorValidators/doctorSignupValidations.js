@@ -42,6 +42,7 @@ exports.doctorSignupValidationScheme = Joi.object({
   age: Joi.number().min(22),
   profilePicture: Joi.string(),
   governorate: Joi.string().required(),
+  age: Joi.number(),
 });
 
 exports.doctorLoginValidationScheme = Joi.object({
