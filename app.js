@@ -1,10 +1,7 @@
 const express = require('express');
 const cors = require('cors');
-<<<<<<< HEAD
 const mongoSanitize = require('express-mongo-sanitize');
-=======
 const path = require('path');
->>>>>>> add group  therapy basic functionality
 const {
   articleRoutes,
   adminRoutes,
