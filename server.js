@@ -1,5 +1,4 @@
 const dotenv = require('dotenv');
-const morgan = require('morgan');
 
 // eslint-disable-next-line no-unused-vars
 const colors = require('colors');
@@ -12,10 +11,6 @@ const { socketEvents } = require('./controllers');
 
 dotenv.config({ path: './config/config.env' });
 const connectDB = require('./config/db');
-
-if (process.env.NODE_ENV === 'development') {
-  app.use(morgan('dev'));
-}
 
 connectDB();
 
