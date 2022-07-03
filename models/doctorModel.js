@@ -44,7 +44,7 @@ const doctorSchema = new mongoose.Schema(
     age: {
       type: Number,
       integer: true,
-      min: 18,
+      min: 22,
     },
     cv: {
       type: String,
