@@ -9,17 +9,10 @@ exports.addCategory = asyncHandler(async (req, res, next) => {
   if (error) {
     return next(new AppError(error, 400));
   }
-  const category = new questionnaireCategoryModel();
 
-  category.name = value.name.en;
+  const category = await questionnaireCategoryModel.create(value);
 
-  if (value.name.ar) {
-    category.set('name.ar', value.name.ar);
-  }
-
-  category.save();
-
-  responseHandler.sendResponse(res, 201, 'success', value, null, null);
+  responseHandler.sendResponse(res, 201, 'success', category, null, null);
 });
 exports.getAllCategories = asyncHandler(async (req, res, next) => {
   const category = await questionnaireCategoryModel.find();
