@@ -7,11 +7,13 @@ exports.getQuestionnaires = asyncHandler(async (req, res, next) => {
   const questionnaires = await questionnaireModel.find().select('-scores');
   responseHandler.sendResponse(res, 200, 'sucess', questionnaires, null, null);
 });
+
 exports.getSingleQuestionnaire = asyncHandler(async (req, res, next) => {
   let questionnaire = await questionnaireModel
     .findById(req.params.questionnaireId)
     .select('-scores');
-  if (questionnaire.groupID === null) {
+
+  if (!questionnaire.groupID) {
     return responseHandler.sendResponse(
       res,
       200,

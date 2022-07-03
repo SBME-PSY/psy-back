@@ -1,8 +1,12 @@
 const mongoose = require('mongoose');
+const mongooseIntl = require('mongoose-intl');
 
 const answerSchema = new mongoose.Schema(
   {
-    body: String,
+    body: {
+      type: String,
+      intl: true,
+    },
     weight: Number,
     choosen: {
       type: Boolean,
@@ -14,7 +18,10 @@ const answerSchema = new mongoose.Schema(
 
 const questionSchema = new mongoose.Schema(
   {
-    body: String,
+    body: {
+      type: String,
+      intl: true,
+    },
     answers: [answerSchema],
   },
   { timestamps: true }
@@ -24,22 +31,39 @@ const scoreSchema = new mongoose.Schema(
   {
     min: Number,
     max: Number,
-    result: String,
-    description: String,
+    result: {
+      type: String,
+      intl: true,
+    },
+    description: {
+      type: String,
+      intl: true,
+    },
   },
   { timestamps: true }
 );
 
-const questionnairSchema = new mongoose.Schema(
+const questionnaireSchema = new mongoose.Schema(
   {
+    title: {
+      type: String,
+      intl: true,
+      required: true,
+    },
     category: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'QuestionnaireCategory',
     },
     questions: [questionSchema],
     scores: [scoreSchema],
-    description: String,
-    rules: String,
+    description: {
+      type: String,
+      intl: true,
+    },
+    rules: {
+      type: String,
+      intl: true,
+    },
     groupID: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'QuestionnaireGroup',
@@ -59,6 +83,10 @@ const questionnairSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-const questionnairModel = mongoose.model('Questionnair', questionnairSchema);
+questionnaireSchema.plugin(mongooseIntl, {
+  languages: ['en', 'ar'],
+});
 
-module.exports = questionnairModel;
+const questionnaireModel = mongoose.model('Questionnair', questionnaireSchema);
+
+module.exports = questionnaireModel;
