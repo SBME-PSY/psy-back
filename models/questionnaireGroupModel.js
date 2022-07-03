@@ -1,13 +1,24 @@
 const mongoose = require('mongoose');
+const mongooseIntl = require('mongoose-intl');
 
 const questionnairGroupSchema = new mongoose.Schema(
   {
-    name: String,
-    description: String,
+    title: {
+      type: String,
+      intl: true,
+    },
+    description: {
+      type: String,
+      intl: true,
+    },
     category: mongoose.Schem.Types.ObjectId,
   },
   { timestamps: true }
 );
+
+questionnairGroupSchema.plugin(mongooseIntl, {
+  languages: ['en', 'ar'],
+});
 
 const questionnairGroupModel = mongoose.model(
   'QuestionnairGroup',

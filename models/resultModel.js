@@ -1,8 +1,12 @@
 const mongoose = require('mongoose');
+const mongooseIntl = require('mongoose-intl');
 
 const answerSchema = new mongoose.Schema(
   {
-    body: String,
+    body: {
+      type: String,
+      intl: true,
+    },
     weight: Number,
     choosen: {
       type: Boolean,
@@ -13,7 +17,10 @@ const answerSchema = new mongoose.Schema(
 
 const questionSchema = new mongoose.Schema(
   {
-    body: String,
+    body: {
+      type: String,
+      intl: true,
+    },
     answers: [answerSchema],
   },
   { timestamps: true }
@@ -32,8 +39,18 @@ const resultSchema = new mongoose.Schema(
     },
     questions: [questionSchema],
     score: Number,
-    description: String,
-    rules: String,
+    result: {
+      type: String,
+      intl: true,
+    },
+    description: {
+      type: String,
+      intl: true,
+    },
+    rules: {
+      type: String,
+      intl: true,
+    },
     groupID: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'QuestionnaireGroup',
@@ -42,6 +59,10 @@ const resultSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
+
+resultSchema.plugin(mongooseIntl, {
+  languages: ['en', 'ar'],
+});
 
 const resultModel = mongoose.model('Result', resultSchema);
 
