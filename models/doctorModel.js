@@ -41,6 +41,11 @@ const doctorSchema = new mongoose.Schema(
       enum: ['pending', 'approved', 'refused'],
       default: 'pending',
     },
+    age: {
+      type: Number,
+      integer: true,
+      min: 18,
+    },
     cv: {
       type: String,
       required: [true, 'please enter your cv'],
