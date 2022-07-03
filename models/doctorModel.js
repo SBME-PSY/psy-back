@@ -7,11 +7,6 @@ const doctorSchema = new mongoose.Schema(
       type: String,
       required: [true, 'Please add a name'],
     },
-    age: {
-      type: Number,
-      integer: true,
-      min: 18,
-    },
     email: {
       type: String,
       required: [true, 'Please add an email'],

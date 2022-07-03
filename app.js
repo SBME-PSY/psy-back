@@ -16,11 +16,12 @@ const {
 } = require('./routes');
 const { AppError } = require('./utils');
 const { errorController } = require('./controllers'); //in progress
-app.use(mongoSanitize());
+
 const app = express();
 app.use(express.json({ limit: '25mb' }));
-
 app.use(cors());
+app.use(mongoSanitize());
+app.use(mongoSanitize());
 app.use('/static', express.static(path.join(__dirname, 'public')));
 app.use('/psy/users', userRoutes);
 app.use('/psy/doctors', doctorRoutes);
