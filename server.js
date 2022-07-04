@@ -1,18 +1,37 @@
 const dotenv = require('dotenv');
+
 // eslint-disable-next-line no-unused-vars
 const colors = require('colors');
+const http = require('http');
+const cors = require('cors');
+const socketIo = require('socket.io');
+const peer = require('peer');
+const app = require('./app');
+const { socketEvents } = require('./controllers');
 
 dotenv.config({ path: './config/config.env' });
 const connectDB = require('./config/db');
 
 connectDB();
-const app = require('./app');
 
+const server = http.createServer(app);
+const io = socketIo(server, {
+  cors: {
+    origin: true,
+  },
+});
+io.on('connection', socketEvents);
+const peerPort = process.env.PEERPORT || 9000;
+const { PeerServer } = peer;
+const peerServer = PeerServer({ port: peerPort, path: '/myapp' });
+peerServer.on('connection', (client) => {
+  console.log('client connected ');
+});
+peerServer.on('disconnect', (client) => {
+  console.log('client disconnected ');
+});
 const PORT = process.env.PORT || 3000;
-
-const server = app.listen(PORT, () =>
-  console.log(`Listening on port ${PORT}`.yellow.bold)
-);
+server.listen(PORT, () => console.log(`Listening on port ${PORT}`.yellow.bold));
 
 // Handle unhandled promise rejections
 process.on('unhandledRejection', (err, promise) => {
