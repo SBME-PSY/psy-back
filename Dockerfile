@@ -13,7 +13,7 @@ RUN npm install
 COPY . .
 RUN npm prune --production
 
-FROM node:14-alpine as final
+FROM node:16-alpine as final
 
 WORKDIR /app/src/app
 
