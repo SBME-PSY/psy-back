@@ -1,6 +1,8 @@
 const express = require('express');
 const morgan = require('morgan');
 const cors = require('cors');
+
+const path = require('path');
 const {
   articleRoutes,
   adminRoutes,
@@ -36,6 +38,7 @@ app.use('/psy/clinics', clinicRoutes);
 app.use('/psy/slots', slotRoutes);
 app.use('/psy/category', categoryRouter);
 app.use('/psy/reviews', reviewsRouter);
+app.use('/static', express.static(path.join(__dirname, 'public')));
 app.use('*', (req, res, next) => {
   next(new AppError('Page Not Found ', 404));
 });
