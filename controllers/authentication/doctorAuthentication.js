@@ -14,6 +14,7 @@ exports.signUp = asyncHandler(async (req, res, next) => {
   }
 
   if (req.file) value.cv = `/static/doctors/cvFile/${req.file.filename}`;
+
   delete value.cvFile;
 
   const newDoctor = await doctorModel.create(value);

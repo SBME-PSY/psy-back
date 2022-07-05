@@ -3,6 +3,7 @@ const cors = require('cors');
 const morgan = require('morgan');
 
 const mongoSanitize = require('express-mongo-sanitize');
+
 const path = require('path');
 const {
   articleRoutes,
@@ -38,6 +39,7 @@ app.use('/psy/clinics', clinicRoutes);
 app.use('/psy/slots', slotRoutes);
 app.use('/psy/category', categoryRouter);
 app.use('/psy/reviews', reviewsRouter);
+app.use('/static', express.static(path.join(__dirname, 'public')));
 app.use('*', (req, res, next) => {
   next(new AppError('Page Not Found ', 404));
 });

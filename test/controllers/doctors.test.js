@@ -234,7 +234,12 @@ describe('Doctor Controller', () => {
       .deleteMany({})
       .then(() => {
         createdFiles.forEach((file) => {
-          fs.unlinkSync(file, (err) => done(err));
+          fs.unlinkSync(
+            path.resolve(
+              file.replace('/static', path.resolve(__dirname, '../../public/'))
+            ),
+            (err) => done(err)
+          );
         });
         return done();
       })

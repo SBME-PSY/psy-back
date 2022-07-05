@@ -3,8 +3,15 @@ const { questionnaireModel, questionnaireGroup } = require('../models');
 const { AppError } = require('../utils');
 const { questionnaireValidators } = require('../validators');
 
-exports.getQuestionnaires = asyncHandler(async (req, res, next) => {
-  const questionnaires = await questionnaireModel.find().select('-scores');
+exports.getQuestionnairesByCategory = asyncHandler(async (req, res, next) => {
+  const { categoryID } = req.query;
+
+  const questionnaires = await questionnaireModel
+    .find({
+      category: categoryID,
+    })
+    .select('title _id description');
+
   responseHandler.sendResponse(res, 200, 'sucess', questionnaires, null, null);
 });
 
