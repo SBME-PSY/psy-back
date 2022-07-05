@@ -45,7 +45,7 @@
     "nodemailer": "^6.7.0",
     "npm": "^7.0.7",
     "peer": "^0.6.1",
-    "sharp": "^0.29.2",
+    "sharp": "^0.30.7",
     "socket.io": "^4.5.1",
     "swagger-jsdoc": "^6.1.0",
     "swagger-ui-express": "^4.3.0"
