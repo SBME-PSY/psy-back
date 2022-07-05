@@ -7,7 +7,7 @@ const router = express.Router();
 
 router
   .route('/')
-  .get(questionnaireController.getQuestionnaires)
+  .get(questionnaireController.getQuestionnairesByCategory)
   .post(
     authFun.protect,
     authorize.authorize('doctor', 'admin'),
