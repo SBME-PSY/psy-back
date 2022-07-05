@@ -6,8 +6,6 @@ const { questionnaireValidators } = require('../validators');
 exports.getQuestionnairesByCategory = asyncHandler(async (req, res, next) => {
   const { categoryID } = req.query;
 
-  console.log(categoryID);
-
   const questionnaires = await questionnaireModel
     .find({
       category: categoryID,
