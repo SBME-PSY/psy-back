@@ -27,7 +27,7 @@ if (process.env.NODE_ENV === 'development') {
 app.use(mongoSanitize());
 app.use(express.json({ limit: '25mb' }));
 app.use(cors());
-app.use(mongoSanitize());
+
 app.use('/static', express.static(path.join(__dirname, 'public')));
 app.use('/psy/users', userRoutes);
 app.use('/psy/doctors', doctorRoutes);
