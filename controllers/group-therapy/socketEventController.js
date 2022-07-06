@@ -22,5 +22,8 @@ const socketEvents = (socket) => {
       console.log('room isnt exist');
     }
   });
+  socket.on('sentMessage', (message, roomId) => {
+    socket.to(roomId).emit('messageCame', message);
+  });
 };
 module.exports = socketEvents;
