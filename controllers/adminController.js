@@ -39,7 +39,7 @@ exports.getStats = asyncHandler(async (req, res, next) => {
     {
       $group: {
         _id: '$governorate',
-        numDoctors: { $sum: 1 },
+        numUsers: { $sum: 1 },
       },
     },
   ]);
