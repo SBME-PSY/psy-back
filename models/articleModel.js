@@ -1,29 +1,39 @@
 const mongoose = require('mongoose');
 
-const articleSchema = new mongoose.Schema({
-  title: {
-    type: 'String',
-    required: [true, 'title is required'],
-    unique: [true, 'isnt unique'],
+const articleSchema = new mongoose.Schema(
+  {
+    title: {
+      type: 'String',
+      required: [true, 'title is required'],
+      unique: [true, 'isnt unique'],
+    },
+    body: {
+      type: String,
+      required: [true, 'article body is required'],
+    },
+    rating: {
+      type: Number,
+      max: 5,
+      min: 0,
+      default: 0,
+    },
+    author: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Doctor',
+    },
   },
-  body: {
-    type: String,
-    required: [true, 'article body is required'],
-  },
-  rating: {
-    type: Number,
-    max: 5,
-    min: 0,
-  },
-  author: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Doctor',
-  },
-  date: {
-    type: Date,
-    default: Date.now(),
-  },
-});
+  { timestamps: true }
+);
+
+articleSchema.index(
+  { title: 'text', body: 'text' },
+  {
+    weights: {
+      title: 5,
+      body: 1,
+    },
+  }
+);
 
 const articleModel = mongoose.model('Article', articleSchema);
 
