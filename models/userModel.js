@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const preSave = require('../utils/preSave');
-const governorates = require('./_data/governorates');
+const governorates = require('../_data/governorates');
 
 const userSchema = new mongoose.Schema(
   {
