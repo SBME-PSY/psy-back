@@ -3,6 +3,7 @@ const preSave = require('../utils/preSave');
 const sex = require('../_data/sex');
 const maritalStatus = require('../_data/maritalStatus');
 const governorates = require('../_data/governorates');
+const specialization = require('../_data/specialization');
 
 const doctorSchema = new mongoose.Schema(
   {
@@ -75,9 +76,15 @@ const doctorSchema = new mongoose.Schema(
       type: String,
       enum: maritalStatus,
     },
+    specialization: {
+      type: String,
+      required: [true, 'please enter your Specialization'],
+      enum: specialization,
+    },
     address: String,
     birthday: Date,
   },
+
   { timestamps: true, toJSON: { virtuals: true }, toObject: { virtuals: true } }
 );
 //hash the password
