@@ -1,5 +1,7 @@
 const mongoose = require('mongoose');
 const preSave = require('../utils/preSave');
+const sex = require('../_data/sex');
+const maritalStatus = require('../_data/maritalStatus');
 const governorates = require('../_data/governorates');
 
 const userSchema = new mongoose.Schema(
@@ -34,7 +36,7 @@ const userSchema = new mongoose.Schema(
     },
     sex: {
       type: String,
-      enum: ['Male', 'Female'],
+      enum: sex,
     },
     governorate: {
       type: String,
@@ -43,14 +45,7 @@ const userSchema = new mongoose.Schema(
     },
     maritalStatus: {
       type: String,
-      enum: [
-        'Single',
-        'Married',
-        'Divorced',
-        'Seperated',
-        'Engaged',
-        'Widowed',
-      ],
+      enum: maritalStatus,
     },
     birthday: {
       type: Date,
