@@ -14,7 +14,6 @@ const {
   questionnaireRoutes,
   clinicRoutes,
   slotRoutes,
-  categoryRouter,
   reviewsRouter,
 } = require('./routes');
 const { AppError } = require('./utils');
@@ -37,7 +36,6 @@ app.use('/psy/results', resultRoutes);
 app.use('/psy/questionnaires', questionnaireRoutes);
 app.use('/psy/clinics', clinicRoutes);
 app.use('/psy/slots', slotRoutes);
-app.use('/psy/category', categoryRouter);
 app.use('/psy/reviews', reviewsRouter);
 app.use('/static', express.static(path.join(__dirname, 'public')));
 app.use('*', (req, res, next) => {
