@@ -20,7 +20,9 @@ exports.createArticle = asyncHandler(async (req, res, next) => {
 });
 
 exports.getArticle = asyncHandler(async (req, res, next) => {
-  const article = await articleModel.findById(req.params.id).populate('author');
+  const article = await articleModel
+    .findById(req.params.id)
+    .populate('author', 'name');
   responseHandler.sendResponse(res, 200, 'sucess', article, null, null);
 });
 
