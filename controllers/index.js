@@ -10,6 +10,6 @@ exports.questionnaireController = require('./questionnaireController');
 exports.resultController = require('./resultController');
 exports.clinicController = require('./clinicController');
 exports.slotController = require('./slotController');
-exports.caegoryController = require('./caegoryController');
+exports.categoryController = require('./categoryController');
 exports.reviewsController = require('./reviewsController');
 exports.socketEvents = require('./group-therapy/socketEventController');
