@@ -33,6 +33,7 @@ describe('Doctor Controller', () => {
     governorate: 'Cairo',
     sex: 'Male',
     maritalStatus: 'Single',
+    specialization: 'Psychiatrist',
   };
   before((done) => {
     chai
