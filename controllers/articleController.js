@@ -20,7 +20,7 @@ exports.createArticle = asyncHandler(async (req, res, next) => {
 });
 
 exports.getArticle = asyncHandler(async (req, res, next) => {
-  const article = await articleModel.findById(req.params.id);
+  const article = await articleModel.findById(req.params.id).populate('author');
   responseHandler.sendResponse(res, 200, 'sucess', article, null, null);
 });
 
@@ -33,6 +33,7 @@ exports.getAllArticles = asyncHandler(async (req, res, next) => {
           $text: { $search: req.query.searchString },
           score: { $meta: 'textScore' },
         })
+        .populate('author', 'name')
         .sort({ score: { $meta: 'textScore' } }),
       req.query
     )
@@ -41,7 +42,10 @@ exports.getAllArticles = asyncHandler(async (req, res, next) => {
       .limitFields()
       .paginate();
   } else {
-    features = new APIFeatures(articleModel.find(), req.query)
+    features = new APIFeatures(
+      articleModel.find().populate('author', 'name'),
+      req.query
+    )
       .filter()
       .sort()
       .limitFields()
