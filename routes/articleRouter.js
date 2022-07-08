@@ -2,6 +2,7 @@ const express = require('express');
 
 const router = express.Router();
 const { articleController } = require('../controllers');
+const reviewsRouter = require('./reviewsRouter');
 const { authFun } = require('../utils');
 const { authorize } = require('../middleware');
 
@@ -14,4 +15,7 @@ router
   )
   .get(articleController.getAllArticles);
 router.route('/:id').get(articleController.getArticle);
+
+router.use('/:modelID/reviews', reviewsRouter);
+
 module.exports = router;
