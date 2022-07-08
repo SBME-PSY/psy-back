@@ -2,8 +2,11 @@ const express = require('express');
 const { questionnaireController } = require('../controllers');
 const { authFun } = require('../utils');
 const { authorize } = require('../middleware');
+const categoryRouter = require('./categoryRouter');
 
-const router = express.Router();
+const router = express.Router({ mergeParams: true });
+
+router.use('/category', categoryRouter);
 
 router
   .route('/')
@@ -37,4 +40,5 @@ router
     authorize.authorize('admin', 'doctor'),
     questionnaireController.createQuestionnaireGroup
   );
+
 module.exports = router;
