@@ -10,6 +10,9 @@ exports.addCategory = asyncHandler(async (req, res, next) => {
     return next(new AppError(error, 400));
   }
 
+  if (req.file)
+    value.image = `/static/questionnaire/category/${req.file.picture}`;
+
   const category = await questionnaireCategoryModel.create(value);
 
   responseHandler.sendResponse(res, 201, 'success', category, null, null);

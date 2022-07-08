@@ -1,16 +1,16 @@
 const express = require('express');
 
-const router = express.Router();
-const { caegoryController } = require('../controllers');
+const router = express.Router({ mergeParams: true });
+const { categoryController } = require('../controllers');
 const { authFun } = require('../utils');
 const { authorize } = require('../middleware');
 
 router
   .route('/')
+  .get(categoryController.getAllCategories)
   .post(
     authFun.protect,
     authorize.authorize('admin'),
-    caegoryController.addCategory
+    categoryController.addCategory
   );
-router.route('/').get(caegoryController.getAllCategories);
 module.exports = router;

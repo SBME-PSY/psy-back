@@ -1,5 +1,8 @@
 const mongoose = require('mongoose');
 const preSave = require('../utils/preSave');
+const sex = require('../_data/sex');
+const maritalStatus = require('../_data/maritalStatus');
+const governorates = require('../_data/governorates');
 
 const userSchema = new mongoose.Schema(
   {
@@ -33,51 +36,16 @@ const userSchema = new mongoose.Schema(
     },
     sex: {
       type: String,
-      enum: ['Male', 'Female'],
+      enum: sex,
     },
     governorate: {
       type: String,
-      enum: [
-        'Alexandria',
-        'Aswan',
-        'Asyut',
-        'Beheira',
-        'Beni Suef',
-        'Cairo',
-        'Dakahlia',
-        'Damietta',
-        'Faiyum',
-        'Gharbia',
-        'Giza',
-        'Ismailia',
-        'Kafr El Sheikh',
-        'Luxor',
-        'Matruh',
-        'Minya',
-        'Monufia',
-        'New Valley',
-        'North Sinai',
-        'Port Said',
-        'Qalyubia',
-        'Qena',
-        'Red Sea',
-        'Sharqia',
-        'Sohag',
-        'South Sinai',
-        'Suez',
-      ],
+      enum: governorates,
       required: [true, 'please enter your governorate'],
     },
     maritalStatus: {
       type: String,
-      enum: [
-        'Single',
-        'Married',
-        'Divorced',
-        'Seperated',
-        'Engaged',
-        'Widowed',
-      ],
+      enum: maritalStatus,
     },
     birthday: {
       type: Date,
