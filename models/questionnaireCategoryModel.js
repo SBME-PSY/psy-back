@@ -6,6 +6,9 @@ const questionnaireCategorySchema = new mongoose.Schema({
     type: String,
     intl: true,
   },
+  picture: {
+    type: String,
+  },
 });
 
 questionnaireCategorySchema.plugin(mongooseIntl, {
