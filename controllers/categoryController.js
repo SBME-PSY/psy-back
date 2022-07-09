@@ -1,3 +1,7 @@
+const Promisify = require('util').promisify;
+const readFile = Promisify(require('fs').readFile);
+const path = require('path');
+
 const { responseHandler, asyncHandler } = require('../middleware');
 const { questionnaireCategoryModel } = require('../models');
 const { questionnaireCategoryValidator } = require('../validators');
@@ -17,7 +21,28 @@ exports.addCategory = asyncHandler(async (req, res, next) => {
 
   responseHandler.sendResponse(res, 201, 'success', category, null, null);
 });
+
 exports.getAllCategories = asyncHandler(async (req, res, next) => {
-  const category = await questionnaireCategoryModel.find();
-  responseHandler.sendResponse(res, 200, 'success', category, null, null);
+  const categories = await questionnaireCategoryModel.find();
+  const data = [];
+  await Promise.all(
+    categories.map(async (category) => {
+      const image = await readFile(
+        path.resolve(
+          category.picture.replace(
+            '/static',
+            path.resolve(__dirname, '../public/')
+          )
+        ),
+        'base64'
+      );
+      data.push({
+        // eslint-disable-next-line
+        ...category.toObject(),
+        base64: `data:image/png;base64,${image}`,
+      });
+    })
+  );
+
+  responseHandler.sendResponse(res, 200, 'success', data, null, null);
 });
