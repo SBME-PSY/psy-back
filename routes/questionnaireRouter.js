@@ -6,7 +6,7 @@ const categoryRouter = require('./categoryRouter');
 
 const router = express.Router({ mergeParams: true });
 
-router.use('/category', categoryRouter);
+router.use('/categories', categoryRouter);
 
 router
   .route('/')
