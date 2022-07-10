@@ -5,7 +5,6 @@ const articleSchema = new mongoose.Schema(
     title: {
       type: 'String',
       required: [true, 'title is required'],
-      unique: [true, 'isnt unique'],
     },
     body: {
       type: String,
