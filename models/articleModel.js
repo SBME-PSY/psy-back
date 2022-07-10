@@ -21,7 +21,7 @@ const articleSchema = new mongoose.Schema(
       ref: 'Doctor',
     },
   },
-  { timestamps: true }
+  { timestamps: true, autoIndex: true }
 );
 
 articleSchema.index(
