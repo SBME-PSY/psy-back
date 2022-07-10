@@ -5,11 +5,11 @@ const articleSchema = new mongoose.Schema(
     title: {
       type: 'String',
       required: [true, 'title is required'],
-      unique: [true, 'isnt unique'],
     },
     body: {
       type: String,
       required: [true, 'article body is required'],
+      minlength: [1000, 'article body must be at least 1000 characters'],
     },
     rating: {
       type: Number,
