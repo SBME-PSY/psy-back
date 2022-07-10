@@ -9,7 +9,6 @@ const articleSchema = new mongoose.Schema(
     body: {
       type: String,
       required: [true, 'article body is required'],
-      minlength: [1000, 'article body must be at least 1000 characters'],
     },
     rating: {
       type: Number,
