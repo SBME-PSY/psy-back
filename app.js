@@ -3,6 +3,7 @@ const cors = require('cors');
 const morgan = require('morgan');
 
 const mongoSanitize = require('express-mongo-sanitize');
+const helmet = require('helmet');
 
 const path = require('path');
 const {
@@ -24,6 +25,7 @@ if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'));
 }
 app.use(mongoSanitize());
+app.use(helmet());
 app.use(express.json({ limit: '25mb' }));
 app.use(cors());
 
