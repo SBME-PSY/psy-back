@@ -7,6 +7,7 @@ const clinicRouter = require('./clinicRouter');
 const reviewsRouter = require('./reviewsRouter');
 
 const { authFun } = require('../utils');
+const articleRouter = require('./articleRouter');
 
 const router = express.Router({ mergeParams: true });
 router
@@ -66,5 +67,6 @@ router
 
 router.use('/clinics', clinicRouter);
 router.use('/:modelID/reviews', reviewsRouter);
+router.use('/:doctorID/articles', articleRouter);
 
 module.exports = router;
