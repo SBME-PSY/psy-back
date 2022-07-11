@@ -4,6 +4,8 @@ const morgan = require('morgan');
 
 const mongoSanitize = require('express-mongo-sanitize');
 const helmet = require('helmet');
+const rateLimit = require('express-rate-limit');
+const hpp = require('hpp');
 
 const path = require('path');
 const {
@@ -28,8 +30,25 @@ app.use(mongoSanitize());
 app.use(helmet());
 app.use(express.json({ limit: '25mb' }));
 app.use(cors());
+app.use(hpp());
+
+const limiter = rateLimit({
+  max: 100,
+  windowMs: 10 * 60 * 1000, // 10 minutes
+  message: 'Too many requests from this IP, please try again in 10 minutes!',
+});
+
+const loginLimiter = rateLimit({
+  max: 5,
+  windowMs: 60 * 60 * 1000, // 1 hour
+  message: 'Too many requests from this IP, please try again in 1 hour!',
+});
 
 app.use('/static', express.static(path.join(__dirname, 'public')));
+app.use('/psy/users/login', loginLimiter);
+app.use('/psy/doctors/login', loginLimiter);
+app.use('/psy/admins/login', loginLimiter);
+app.use('/psy/', limiter);
 app.use('/psy/users', userRoutes);
 app.use('/psy/doctors', doctorRoutes);
 app.use('/psy/admins', adminRoutes);
