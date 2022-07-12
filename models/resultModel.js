@@ -10,6 +10,7 @@ const answerSchema = new mongoose.Schema(
     weight: Number,
     choosen: {
       type: Boolean,
+      default: false,
     },
   },
   { timestamps: true }

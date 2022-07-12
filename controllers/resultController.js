@@ -2,10 +2,18 @@ const { asyncHandler, responseHandler } = require('../middleware');
 const { resultModel, questionnaireGroupResultModel } = require('../models');
 const { getQuestionnaireResult } = require('../utils');
 const { questionnaireResultValidators } = require('../validators');
-const { AppError } = require('../utils');
+const { AppError, APIFeatures } = require('../utils');
 
 exports.getUserResults = asyncHandler(async (req, res, next) => {
-  const allResults = await resultModel.find({ user: req.user._id });
+  const features = new APIFeatures(
+    resultModel.find({ user: req.user._id }),
+    req.query
+  )
+    .filter()
+    .sort()
+    .limitFields()
+    .paginate();
+  const allResults = await features.query;
   responseHandler.sendResponse(res, 200, 'sucess', allResults, null, null);
 });
 
