@@ -43,6 +43,18 @@ exports.getAllArticles = asyncHandler(async (req, res, next) => {
       .sort()
       .limitFields()
       .paginate();
+  } else if (req.params.doctorID) {
+    features = new APIFeatures(
+      articleModel
+        .find({ author: req.params.doctorID })
+        .populate({ path: 'author', select: 'name picture specialization' })
+        .sort({ createdAt: -1 }),
+      req.query
+    )
+      .filter()
+      .sort()
+      .limitFields()
+      .paginate();
   } else {
     features = new APIFeatures(
       articleModel

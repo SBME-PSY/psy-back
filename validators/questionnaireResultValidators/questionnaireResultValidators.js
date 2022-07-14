@@ -18,7 +18,7 @@ exports.questionnaireResultValidators = Joi.object({
               ar: Joi.string(),
             }).required(),
             weight: Joi.number().required(),
-            choosen: Joi.boolean().required(),
+            choosen: Joi.boolean(),
           })
         ),
       })
