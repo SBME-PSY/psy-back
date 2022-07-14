@@ -1,15 +1,7 @@
 const Joi = require('joi');
-
-const maritalStatus = [
-  'Single',
-  'Married',
-  'Divorced',
-  'Widowed',
-  'Seperated',
-  'Engaged',
-];
-
-const sex = ['Male', 'Female'];
+const governorates = require('../../_data/governorates');
+const maritalStatus = require('../../_data/maritalStatus');
+const sex = require('../../_data/sex');
 
 exports.editUserProfile = Joi.object({
   name: Joi.string(),
@@ -21,4 +13,5 @@ exports.editUserProfile = Joi.object({
   role: Joi.string().equal('user'),
   birthday: Joi.string().isoDate(),
   age: Joi.number().integer().min(18),
+  governorate: Joi.string().valid(...governorates),
 });
