@@ -99,9 +99,13 @@ exports.getUserProfile = asyncHandler(async (req, res, next) => {
 });
 
 exports.updateUserProfile = asyncHandler(async (req, res, next) => {
-  const user = await userModel.findById(req.user._id);
+  const user = await userModel.findById(req.user.id);
 
-  const { error, value } = userValidators.editUserProfile.validate(user);
+  if (!user) {
+    return next(new AppError(`No user with the id of ${req.user.id}`, 404));
+  }
+
+  const { error, value } = userValidators.editUserProfile.validate(req.body);
 
   if (error) {
     return next(new AppError(error.details[0].message, 400));
