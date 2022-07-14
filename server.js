@@ -3,7 +3,7 @@ const dotenv = require('dotenv');
 // eslint-disable-next-line no-unused-vars
 const colors = require('colors');
 const http = require('http');
-const cors = require('cors');
+// const cors = require('cors');
 const socketIo = require('socket.io');
 const peer = require('peer');
 const app = require('./app');
@@ -21,7 +21,7 @@ const io = socketIo(server, {
   },
 });
 io.on('connection', socketEvents);
-const peerPort = process.env.PEERPORT || 443;
+const peerPort = process.env.PEERPORT || 9000;
 const { PeerServer } = peer;
 const peerServer = PeerServer({ port: peerPort, path: '/myapp' });
 peerServer.on('connection', (client) => {
