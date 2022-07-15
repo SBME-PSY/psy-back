@@ -17,6 +17,7 @@ const socketEvents = (socket) => {
         socket.to(roomId).emit('user-disconnect', peerId);
       });
     } else {
+      //handel no rooms
       socket.emit('no-room', roomId);
     }
   });
