@@ -21,7 +21,7 @@ const io = socketIo(server, {
   },
 });
 io.on('connection', socketEvents);
-const peerPort = process.env.PEERPORT || 443;
+const peerPort = process.env.PEERPORT || 9000;
 const { PeerServer } = peer;
 const peerServer = PeerServer({ port: peerPort, path: '/myapp' });
 peerServer.on('connection', (client) => {
