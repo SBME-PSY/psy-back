@@ -10,7 +10,8 @@ exports.getQuestionnairesByCategory = asyncHandler(async (req, res, next) => {
     .find({
       category: categoryID,
     })
-    .select('title _id description');
+    .select('title _id description author authorModel')
+    .populate({ path: 'author', select: 'name' });
 
   responseHandler.sendResponse(res, 200, 'sucess', questionnaires, null, null);
 });
@@ -18,6 +19,7 @@ exports.getQuestionnairesByCategory = asyncHandler(async (req, res, next) => {
 exports.getSingleQuestionnaire = asyncHandler(async (req, res, next) => {
   let questionnaire = await questionnaireModel
     .findById(req.params.questionnaireId)
+    .populate({ path: 'author', select: 'name' })
     .select('-scores');
 
   if (!questionnaire.groupID) {
