@@ -18,6 +18,7 @@ exports.getQuestionnairesByCategory = asyncHandler(async (req, res, next) => {
 exports.getSingleQuestionnaire = asyncHandler(async (req, res, next) => {
   let questionnaire = await questionnaireModel
     .findById(req.params.questionnaireId)
+    .populate({ path: 'author', select: 'name' })
     .select('-scores');
 
   if (!questionnaire.groupID) {
