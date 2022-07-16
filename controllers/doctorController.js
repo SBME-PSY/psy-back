@@ -5,6 +5,7 @@ const APIFeatures = require('../utils/apiFeatures');
 const { doctorModel, followUpRequestModel, userModel } = require('../models');
 const { AppError } = require('../utils');
 const { asyncHandler, responseHandler } = require('../middleware');
+const { doctorValidators } = require('../validators');
 
 exports.getAllDoctors = asyncHandler(async (req, res, next) => {
   const features = new APIFeatures(doctorModel.find(), req.query)
@@ -44,9 +45,17 @@ exports.getDoctorProfile = asyncHandler(async (req, res, next) => {
 });
 
 exports.updateDoctorProfile = asyncHandler(async (req, res, next) => {
-  if (req.file) req.body.picture = req.file.filename;
+  if (req.file)
+    req.body.picture = `/static/doctors/profile-picture/${req.file.filename}`;
 
-  if (req.body.name && !req.file) {
+  const { error, value } =
+    doctorValidators.updateDoctorValidationScheme.validate(req.body);
+
+  if (error) {
+    return next(new AppError(error.details[0].message, 400));
+  }
+
+  if (value.name && !req.file) {
     const temp = await doctorModel.findById(req.user.id).select('picture');
 
     const uri =
@@ -54,14 +63,39 @@ exports.updateDoctorProfile = asyncHandler(async (req, res, next) => {
     if (temp.picture.startsWith(uri)) {
       const initials = req.body.name.split(' ').join('+');
       const picURL = `${uri + initials}`;
-      req.body.picture = picURL;
+      value.picture = picURL;
     }
   }
 
-  const doctor = await doctorModel.findByIdAndUpdate(req.user.id, req.body, {
+  let doctor = await doctorModel.findByIdAndUpdate(req.user.id, value, {
     new: true,
     runValidators: true,
   });
+
+  if (req.file) {
+    const ret = new Promise((resolve, reject) => {
+      fs.readFile(
+        path.join(
+          __dirname,
+          `../public/doctors/profile-picture/${req.file.filename}`
+        ),
+        (err, data) => {
+          if (err) {
+            reject(err);
+          }
+          const base64PictureUrl = `data:image/${
+            req.file.filename.split('.')[1]
+          };base64,${Buffer.from(data, 'base64')}`;
+          doctor.picture = base64PictureUrl;
+          resolve(doctor);
+        }
+      );
+    });
+
+    if (ret) {
+      doctor = await ret;
+    }
+  }
   responseHandler.sendResponse(res, 200, 'success', doctor, null, null);
 });
 
