@@ -42,21 +42,13 @@ router
   .get(authFun.protect, doctorController.getDoctorProfile)
   .patch(
     authFun.protect,
+    authorize.authorize('doctor'),
     fileUpload.setUploadParametersSingle(
       'doctorPic-',
       path.resolve(__dirname, '../public/doctors/profile-picture'),
       'image'
     ),
     fileUpload.base64UploadSingle('profilePicture'),
-    advancedResults.filterBody(
-      'name',
-      'email',
-      'phone',
-      'sex',
-      'maritalStatus',
-      'picture',
-      'address'
-    ),
     doctorController.updateDoctorProfile
   );
 
