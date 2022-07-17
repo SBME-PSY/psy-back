@@ -20,17 +20,16 @@ exports.getAllDoctors = asyncHandler(async (req, res, next) => {
 });
 
 exports.getDoctorProfile = asyncHandler(async (req, res, next) => {
-  const doctor = await doctorModel
-    .findById(req.user.id)
-    .select(
-      'name email picture createdAt address phone sex maritalStatus clinics status'
-    );
+  const doctor = await doctorModel.findById(req.user.id);
   if (doctor.picture.startsWith('https://')) {
-    return res.status(200).json({ success: true, data: doctor });
+    responseHandler.sendResponse(res, 200, 'success', doctor, null, null);
   }
 
   fs.readFile(
-    path.join(__dirname, `../public/doctors/profile-picture/${doctor.picture}`),
+    path.join(
+      __dirname,
+      `../public/doctors/profile-picture/${doctor.picture.split('/').pop()}`
+    ),
     (err, data) => {
       if (err) {
         return new AppError("Couldn't retrieve doctor image", 500);
