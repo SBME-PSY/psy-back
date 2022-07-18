@@ -4,7 +4,7 @@ const socketEvents = (socket) => {
     rooms[socket.id] = roomId;
     socket.join(roomId);
     socket.on('disconnect', () => {
-      socket.to(roomId).emit('user-disconnect', peerId);
+      socket.to(roomId).emit('admin-disconnect', peerId);
       delete rooms[socket.id];
     });
   });
@@ -16,9 +16,6 @@ const socketEvents = (socket) => {
       socket.on('disconnect', () => {
         socket.to(roomId).emit('user-disconnect', peerId);
       });
-    } else {
-      //handel no rooms
-      socket.emit('no-room', roomId);
     }
   });
   socket.on('sentMessage', (message, roomId) => {
